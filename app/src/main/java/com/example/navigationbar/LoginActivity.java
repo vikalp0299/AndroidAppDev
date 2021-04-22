@@ -11,18 +11,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity {
-    private static final int REQUEST_READ_CONTACTS = 0;
 
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
 
     private EditText Password, LearnerId;
-    //private View mProgressView;
-    //private View mLoginFormView;
+    private TextView ForgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,26 +26,43 @@ public class LoginActivity extends AppCompatActivity {
         // declaring object of EditText control
         LearnerId = (EditText) findViewById(R.id.LearnerId);
         Password = (EditText) findViewById(R.id.Password);
-
+        ForgotPassword = (TextView) findViewById(R.id.ForgotPassword);
         Button LoginBtn = (Button) findViewById(R.id.LoginBtn);
+
+        ForgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent ForgotPasswordIntent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(ForgotPasswordIntent);
+            }
+        });
+
         LoginBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 String LId = LearnerId.getText().toString();
                 String Pwd = Password.getText().toString();
+
                 if(LId.equalsIgnoreCase("ADMIN") && Pwd.equals("ADMIN")){
                     Intent MainIntent = new Intent(LoginActivity.this, MainActivity.class);
+                    Toast.makeText(LoginActivity.this,"You are Signed in Successfully", Toast.LENGTH_LONG).show();
                     startActivity(MainIntent);
-                    Toast.makeText(LoginActivity.this,"You are Sign in Successfully.", Toast.LENGTH_LONG).show();
+                    finish();
                 }else
                 {
-                    Toast.makeText(LoginActivity.this,"User Name or Password is incorrect.", Toast.LENGTH_LONG).show();
+                    if(LId.isEmpty()) {
+                        Toast.makeText(getApplicationContext(),"enter learner id",Toast.LENGTH_SHORT).show();
+                    }
+                    else if(Pwd.isEmpty()) {
+                        Toast.makeText(getApplicationContext(),"enter password",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                    Toast.makeText(LoginActivity.this, "User Name or Password is incorrect", Toast.LENGTH_LONG).show();
+                }
                 }
             }
         });
 
-        //mLoginFormView = findViewById(R.id.login_form);
-        //mProgressView = findViewById(R.id.login_progress);
     }
 }
 
