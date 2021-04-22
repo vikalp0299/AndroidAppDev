@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">NavigationBar</string>
     <string name="navigation">Navigation</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="notification_tab">Notification Tab</string>
+    <string name="chat_tab">Chat Tab</string>
+    <string name="teams_tab">Teams Tab</string>
+    <string name="assignment_tab">assignment Tab</string>
+    <string name="calender_tab">Calender Tab</string>
 </resources>
