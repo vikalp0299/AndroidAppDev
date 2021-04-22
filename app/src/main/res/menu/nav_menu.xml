@@ -2,27 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/notification"
-        android:title="notification"
+        android:title="@string/notification"
         android:icon="@drawable/ic_notifications"
         />
     <item
         android:id="@+id/Chats"
-        android:title="chats"
+        android:title="@string/chats"
         android:icon="@drawable/ic_chat"
         />
     <item
         android:id="@+id/Teams"
-        android:title="teams"
+        android:title="@string/teams"
         android:icon="@drawable/ic_teams"
         />
     <item
         android:id="@+id/Assignment"
-        android:title="assignment"
+        android:title="@string/assignment"
         android:icon="@drawable/ic_assignment"
         />
     <item
         android:id="@+id/Calender"
-        android:title="calendar"
+        android:title="@string/calendar"
         android:icon="@drawable/ic_calender"
         />
 </menu>
