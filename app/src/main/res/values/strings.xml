@@ -8,4 +8,9 @@
     <string name="teams_tab">Teams Tab</string>
     <string name="assignment_tab">assignment Tab</string>
     <string name="calender_tab">Calender Tab</string>
+    <string name="notification">Notification</string>
+    <string name="chats">chats</string>
+    <string name="teams">Teams</string>
+    <string name="assignment">Assignment</string>
+    <string name="calender">Calender</string>
 </resources>
