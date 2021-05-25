@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NavigationBar">
-        <activity android:name=".ForgotPasswordActivity"></activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".FirstTeamActivity" />
+        <activity android:name=".ForgotPasswordActivity" />
+        <activity android:name=".MainActivity">
+
+        </activity>
+
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

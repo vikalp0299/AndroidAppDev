@@ -1,5 +1,6 @@
 package com.example.navigationbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.SurfaceControl;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.Teams:
                         showFragment(TeamsFragment.newInstance("",""));
+                        //Intent intent = new Intent(MainActivity.this, TeamsActivity.class);
+                        //startActivity(intent);
                         return true;
                     case R.id.Assignment:
                         showFragment(AssignmentFragment.newInstance("",""));
