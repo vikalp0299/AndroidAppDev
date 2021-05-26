@@ -4,6 +4,7 @@ package com.example.navigationbar.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +93,43 @@ public class TeamsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        saveData();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveData();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveData();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        saveData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        saveData();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        saveData();
+    }
+
 
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
