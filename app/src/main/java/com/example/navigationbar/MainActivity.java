@@ -63,12 +63,13 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.Calender:
                         fm.beginTransaction().hide(active).show(fragment5).commit();
                         active = fragment5;
-
+                        return true;
                     default:
                         return false;
                 }
             }
         });
+
         //showFragment(NotificationFragment.newInstance("",""));
     }
 
