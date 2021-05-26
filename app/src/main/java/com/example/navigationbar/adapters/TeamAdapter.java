@@ -71,6 +71,7 @@ public final class TeamAdapter extends Adapter {
         private ImageView mMenus;
         private LinearLayout tile;
         private final View v;
+        //SharedPreferencesClass sobj = new SharedPreferencesClass();
 
         public final TextView getName() {
             return this.name;
@@ -100,6 +101,7 @@ public final class TeamAdapter extends Adapter {
                             pos.setTeamDetail(editText.getText().toString());
                             TeamAdapter.this.notifyDataSetChanged();
                             Toast.makeText(getV().getContext(), "Team Information is Edited", Toast.LENGTH_SHORT).show();
+
                             dialog.dismiss();
                         }).setNegativeButton("Cancel", null).create().show();
                         bool = true;
