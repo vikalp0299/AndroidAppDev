@@ -92,12 +92,14 @@ public class TeamsFragment extends Fragment {
                 TeamsFragment.this.addInfo();
             }
         }));
+        setRetainInstance(true);
         return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setRetainInstance(true);
     }
 
     private final void addInfo() {
