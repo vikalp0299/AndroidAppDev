@@ -1,4 +1,4 @@
-package com.example.navigationbar.model;
+package com.example.navigationbar.data;
 
 
 public final class TeamData {

@@ -1,13 +1,10 @@
 package com.example.navigationbar.fragments;
 
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,13 +14,13 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
-import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
-import com.example.navigationbar.model.TeamData;
+import com.example.navigationbar.data.TeamData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.navigationbar.view.TeamAdapter;
+import com.example.navigationbar.adapters.TeamAdapter;
 import java.util.ArrayList;
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TeamsFragment#newInstance} factory method to
@@ -31,16 +28,8 @@ import java.util.ArrayList;
  */
 public class TeamsFragment extends Fragment {
 
-    //View view;
-    /*RecyclerView recyclerView;
-    List<ModalClass> mList;
-    CustomAdapter customAdapter;*/
-    //MyRecyclerViewAdapter adapter;
-    private FloatingActionButton addsBtn;
-    private RecyclerView recv;
-    private ArrayList userList;
+    private ArrayList<TeamData> userList;
     private TeamAdapter adapter;
-    Context context;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -82,71 +71,52 @@ public class TeamsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teams, container, false);
-        userList = new ArrayList();
-        addsBtn = (FloatingActionButton)view.findViewById(R.id.addingBtn);
-        recv = (RecyclerView)view.findViewById(R.id.mRecycler);
+        userList = new ArrayList<>();
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.addingBtn);
+        RecyclerView recyclerView = view.findViewById(R.id.mRecycler);
         adapter = new TeamAdapter(getContext(),userList);
-        recv.setLayoutManager((LayoutManager)(new LinearLayoutManager(getContext())));
-        recv.setAdapter((Adapter)adapter);
-        addsBtn.setOnClickListener((OnClickListener)(new OnClickListener() {
-            public final void onClick(View it) {
-                TeamsFragment.this.addInfo();
-            }
-        }));
-        //setRetainInstance(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+        floatingActionButton.setOnClickListener(it -> TeamsFragment.this.addInfo());
         return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
     }
 
-    private final void addInfo() {
+    private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View v = inflater.inflate(R.layout.add_item, (ViewGroup)null);
-        final EditText userName = (EditText)v.findViewById(R.id.teamName);
-        final EditText userNo = (EditText)v.findViewById(R.id.teamDetails);
-        Builder addDialog = new Builder(getContext());
+        View v = inflater.inflate(R.layout.add_item, null);
+        final EditText userName = v.findViewById(R.id.teamName);
+        final EditText userNo = v.findViewById(R.id.teamDetails);
+        Builder addDialog = new Builder(Objects.requireNonNull(getContext()));
         addDialog.setView(v);
-        addDialog.setPositiveButton((CharSequence)"Ok", (android.content.DialogInterface.OnClickListener)(new android.content.DialogInterface.OnClickListener() {
-            public final void onClick(DialogInterface dialog, int $noName_1) {
-                EditText editText = userName;
-                String names = editText.getText().toString();
-                editText = userNo;
-                String number = editText.getText().toString();
-                TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new TeamData(names, number));
-                TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
-                Toast.makeText(getContext(), (CharSequence)"Added Team Successfully", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        }));
-        addDialog.setNegativeButton((CharSequence)"Cancel", (android.content.DialogInterface.OnClickListener)(new android.content.DialogInterface.OnClickListener() {
-            public final void onClick(DialogInterface dialog, int $noName_1) {
-                dialog.dismiss();
-                Toast.makeText(getContext(), (CharSequence)"Cancel", Toast.LENGTH_SHORT).show();
-            }
-        }));
+        addDialog.setPositiveButton("Ok", (dialog, $noName_1) -> {
+            EditText editText = userName;
+            String names = editText.getText().toString();
+            editText = userNo;
+            String number = editText.getText().toString();
+            TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new TeamData(names, number));
+            TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
+            Toast.makeText(getContext(), "Added Team Successfully", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        });
+        addDialog.setNegativeButton("Cancel", (dialog, $noName_1) -> {
+            dialog.dismiss();
+            Toast.makeText(getContext(), "Cancel", Toast.LENGTH_SHORT).show();
+        });
         addDialog.create();
         addDialog.show();
     }
 
-    public static final ArrayList access$getTeamList$p(TeamsFragment $this) {
-        ArrayList recv = $this.userList;
-        return recv;
+    public static ArrayList<TeamData> access$getTeamList$p(TeamsFragment $this) {
+        return $this.userList;
     }
 
-    public static final void access$setTeamList$p(TeamsFragment $this, ArrayList var1) {
-        $this.userList = var1;
+    public static TeamAdapter access$getTeamAdapter$p(TeamsFragment $this) {
+        return $this.adapter;
     }
 
-    public static final TeamAdapter access$getTeamAdapter$p(TeamsFragment $this) {
-        TeamAdapter recv = $this.adapter;
-        return recv;
-    }
-
-    public static final void access$setTeamAdapter$p(TeamsFragment $this, TeamAdapter var1) {
-        $this.adapter = var1;
-    }
 }
