@@ -5,10 +5,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
-import com.google.android.material.tabs.TabItem;
+import com.example.navigationbar.adapters.PageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
-public class FirstTeamActivity extends AppCompatActivity {
+public class TeamActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
