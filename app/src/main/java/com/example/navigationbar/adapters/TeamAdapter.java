@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.example.navigationbar.TeamActivity;
 import com.example.navigationbar.R;
-import com.example.navigationbar.data.TeamData;
+import com.example.navigationbar.model.TeamData;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public final class TeamAdapter extends Adapter {
 
     private final Context c;
-    private final ArrayList teamList;
+    private final ArrayList<TeamData> teamList;
 
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -54,11 +54,11 @@ public final class TeamAdapter extends Adapter {
     }
 
 
-    public final ArrayList getTeamList() {
+    public final ArrayList<TeamData> getTeamList() {
         return this.teamList;
     }
 
-    public TeamAdapter(Context c, ArrayList teamList) {
+    public TeamAdapter(Context c, ArrayList<TeamData> teamList) {
         super();
         this.c = c;
         this.teamList = teamList;
