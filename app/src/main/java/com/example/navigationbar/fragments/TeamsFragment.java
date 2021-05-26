@@ -12,16 +12,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.navigationbar.R;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+
+import com.example.navigationbar.model.TeamData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.navigationbar.model.UserData;
-import com.example.navigationbar.view.UserAdapter;
+import com.example.navigationbar.view.TeamAdapter;
 import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +39,7 @@ public class TeamsFragment extends Fragment {
     private FloatingActionButton addsBtn;
     private RecyclerView recv;
     private ArrayList userList;
-    private UserAdapter adapter;
+    private TeamAdapter adapter;
     Context context;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -84,7 +85,7 @@ public class TeamsFragment extends Fragment {
         userList = new ArrayList();
         addsBtn = (FloatingActionButton)view.findViewById(R.id.addingBtn);
         recv = (RecyclerView)view.findViewById(R.id.mRecycler);
-        adapter = new UserAdapter(getContext(),userList);
+        adapter = new TeamAdapter(getContext(),userList);
         recv.setLayoutManager((LayoutManager)(new LinearLayoutManager(getContext())));
         recv.setAdapter((Adapter)adapter);
         addsBtn.setOnClickListener((OnClickListener)(new OnClickListener() {
@@ -92,7 +93,7 @@ public class TeamsFragment extends Fragment {
                 TeamsFragment.this.addInfo();
             }
         }));
-        setRetainInstance(true);
+        //setRetainInstance(true);
         return view;
     }
 
@@ -105,8 +106,8 @@ public class TeamsFragment extends Fragment {
     private final void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View v = inflater.inflate(R.layout.add_item, (ViewGroup)null);
-        final EditText userName = (EditText)v.findViewById(R.id.userName);
-        final EditText userNo = (EditText)v.findViewById(R.id.userNo);
+        final EditText userName = (EditText)v.findViewById(R.id.teamName);
+        final EditText userNo = (EditText)v.findViewById(R.id.teamDetails);
         Builder addDialog = new Builder(getContext());
         addDialog.setView(v);
         addDialog.setPositiveButton((CharSequence)"Ok", (android.content.DialogInterface.OnClickListener)(new android.content.DialogInterface.OnClickListener() {
@@ -115,9 +116,9 @@ public class TeamsFragment extends Fragment {
                 String names = editText.getText().toString();
                 editText = userNo;
                 String number = editText.getText().toString();
-                TeamsFragment.access$getUserList$p(TeamsFragment.this).add(new UserData(names, number));
-                TeamsFragment.access$getUserAdapter$p(TeamsFragment.this).notifyDataSetChanged();
-                Toast.makeText(getContext(), (CharSequence)"Adding User Information Success", Toast.LENGTH_SHORT).show();
+                TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new TeamData(names, number));
+                TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
+                Toast.makeText(getContext(), (CharSequence)"Added Team Successfully", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         }));
@@ -131,21 +132,21 @@ public class TeamsFragment extends Fragment {
         addDialog.show();
     }
 
-    public static final ArrayList access$getUserList$p(TeamsFragment $this) {
+    public static final ArrayList access$getTeamList$p(TeamsFragment $this) {
         ArrayList recv = $this.userList;
         return recv;
     }
 
-    public static final void access$setUserList$p(TeamsFragment $this, ArrayList var1) {
+    public static final void access$setTeamList$p(TeamsFragment $this, ArrayList var1) {
         $this.userList = var1;
     }
 
-    public static final UserAdapter access$getUserAdapter$p(TeamsFragment $this) {
-        UserAdapter recv = $this.adapter;
+    public static final TeamAdapter access$getTeamAdapter$p(TeamsFragment $this) {
+        TeamAdapter recv = $this.adapter;
         return recv;
     }
 
-    public static final void access$setUserAdapter$p(TeamsFragment $this, UserAdapter var1) {
+    public static final void access$setTeamAdapter$p(TeamsFragment $this, TeamAdapter var1) {
         $this.adapter = var1;
     }
 }

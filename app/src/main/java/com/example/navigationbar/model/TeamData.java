@@ -1,29 +1,29 @@
 package com.example.navigationbar.model;
 
 
-public final class UserData {
+public final class TeamData {
 
     private String userName;
     private String userMb;
 
 
-    public final String getUserName() {
+    public final String getTeamName() {
         return this.userName;
     }
 
-    public final void setUserName(String var1) {
+    public final void setTeamName(String var1) {
         this.userName = var1;
     }
 
-    public final String getUserMb() {
+    public final String getTeamDetail() {
         return this.userMb;
     }
 
-    public final void setUserMb(String var1) {
+    public final void setTeamDetail(String var1) {
         this.userMb = var1;
     }
 
-    public UserData(String userName,String userMb) {
+    public TeamData(String userName, String userMb) {
         super();
         this.userName = userName;
         this.userMb = userMb;
@@ -37,11 +37,11 @@ public final class UserData {
         return this.userMb;
     }
 
-    public final UserData copy(String userName, String userMb) {
-        return new UserData(userName, userMb);
+    public final TeamData copy(String userName, String userMb) {
+        return new TeamData(userName, userMb);
     }
 
-    public static UserData copy$default(UserData var0, String var1, String var2, int var3, Object var4) {
+    public static TeamData copy$default(TeamData var0, String var1, String var2, int var3, Object var4) {
         if ((var3 & 1) != 0) {
             var1 = var0.userName;
         }
@@ -54,7 +54,7 @@ public final class UserData {
     }
 
     public String toString() {
-        return "UserData(userName=" + this.userName + ", userMb=" + this.userMb + ")";
+        return "TeamData(userName=" + this.userName + ", userMb=" + this.userMb + ")";
     }
 
     public int hashCode() {
@@ -66,8 +66,8 @@ public final class UserData {
 
     public boolean equals(Object var1) {
         if (this != var1) {
-            if (var1 instanceof UserData) {
-                UserData var2 = (UserData)var1;
+            if (var1 instanceof TeamData) {
+                TeamData var2 = (TeamData)var1;
                 return true;
             }
 

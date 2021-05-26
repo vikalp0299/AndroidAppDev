@@ -61,7 +61,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
         @Override
         public void onClick(View view) {
-            onItemClick(view, getAdapterPosition());
+            onItemClick(getAdapterPosition());
         }
     }
 
@@ -72,7 +72,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
 
 
-    public void onItemClick(View view, int position){
+    public void onItemClick(int position){
 
         final Intent intent;
         switch (position){

@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <EditText
-            android:id="@+id/userName"
+            android:id="@+id/teamName"
             android:hint="Title"
             android:inputType="textPersonName"
             android:textColor="@color/purple_500"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"/>
 
         <EditText
-            android:id="@+id/userNo"
+            android:id="@+id/teamDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
