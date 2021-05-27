@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public final class TeamAdapter extends Adapter {
 
     private final Context c;
-    private final ArrayList<TeamData> teamList;
+    private ArrayList<TeamData> teamList;
 
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -53,6 +53,11 @@ public final class TeamAdapter extends Adapter {
         return this.teamList.size();
     }
 
+    public void setFilter(ArrayList<TeamData> countryModels){
+        teamList = new ArrayList<>();
+        teamList.addAll(countryModels);
+        notifyDataSetChanged();
+    }
 
     public final ArrayList<TeamData> getTeamList() {
         return this.teamList;
@@ -71,7 +76,6 @@ public final class TeamAdapter extends Adapter {
         private ImageView mMenus;
         private LinearLayout tile;
         private final View v;
-        //SharedPreferencesClass sobj = new SharedPreferencesClass();
 
         public final TextView getName() {
             return this.name;
