@@ -1,19 +1,22 @@
 package com.example.navigationbar.fragments;
 
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.navigationbar.R;
 
 import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,9 +36,8 @@ import com.google.gson.reflect.TypeToken;
  * Use the {@link TeamsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamsFragment extends Fragment {
+public class TeamsFragment extends Fragment implements SearchView.OnQueryTextListener{
 
-    Context context;
     private ArrayList<TeamData> teamList;
     private TeamAdapter adapter;
 
@@ -92,8 +94,63 @@ public class TeamsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
+
+    //search filter code
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+
+        final MenuItem item = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+
+
+        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                adapter.setFilter(teamList);
+                return true; // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true; // Return true to expand action view
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        final ArrayList<TeamData> filteredModelList = filter(teamList, newText);
+        adapter.setFilter(filteredModelList);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    private ArrayList<TeamData> filter(ArrayList<TeamData> models, String query) {
+        query = query.toLowerCase();
+
+        final ArrayList<TeamData> filteredModelList = new ArrayList<>();
+        for (TeamData model : models) {
+            final String text = model.getTeamName().toLowerCase();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
+
+    //saves fragment data on different states
     @Override
     public void onResume() {
         super.onResume();
@@ -130,7 +187,7 @@ public class TeamsFragment extends Fragment {
         saveData();
     }
 
-
+    //dialog box for adding team
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View v = inflater.inflate(R.layout.add_item, null);
@@ -165,6 +222,7 @@ public class TeamsFragment extends Fragment {
         return $this.adapter;
     }
 
+    //saves data i.e, saves created teams and any updates to it
     private void saveData(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -174,6 +232,7 @@ public class TeamsFragment extends Fragment {
         editor.apply();
     }
 
+    //loads team data on relaunching of application
     private void loadData() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         Gson gson = new Gson();

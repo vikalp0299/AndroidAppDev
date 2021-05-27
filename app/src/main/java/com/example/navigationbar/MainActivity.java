@@ -14,13 +14,16 @@ import com.example.navigationbar.fragments.TeamsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
+
     BottomNavigationView bottomNavigationView;
+
     final Fragment fragment1 = new NotificationFragment();
     final Fragment fragment2 = new ChatFragment();
     final Fragment fragment3 = new TeamsFragment();
     final Fragment fragment4 = new AssignmentFragment();
     final Fragment fragment5 = new CalendarFragment();
     final FragmentManager fm = getSupportFragmentManager();
+
     Fragment active = fragment1;
 
     @Override
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         fm.beginTransaction().add(R.id.Framelayout, fragment3, "3").hide(fragment3).commit();
         fm.beginTransaction().add(R.id.Framelayout, fragment2, "2").hide(fragment2).commit();
         fm.beginTransaction().add(R.id.Framelayout,fragment1, "1").commit();
+
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.notification:
