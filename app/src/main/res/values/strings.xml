@@ -8,5 +8,14 @@
     <string name="teams">Teams</string>
     <string name="chats">Chats</string>
     <string name="notification">Notification</string>
-
+    <string name="create_account">Create account</string>
+    <string name="regardless_of_the_pandemic_technology_still_connect_us">Regardless of the pandemic,<br/> Technology still unites us</string>
+    <string name="password">Password</string>
+    <string name="last_name">Last name</string>
+    <string name="first_name">First name</string>
+    <string name="create_your_account">Create your account</string>
+    <string name="email_address">Email address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="next">Next</string>
+    <string name="app_logo">app logo</string>
 </resources>
