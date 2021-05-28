@@ -1,4 +1,4 @@
-package com.example.navigationbar;
+package com.example.connect;
 
 import android.content.Context;
 

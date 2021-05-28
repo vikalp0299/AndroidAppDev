@@ -1,19 +1,18 @@
-package com.example.navigationbar.AuthenticationActivities;
+package com.example.connect.AuthenticationActivities;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.navigationbar.Entities.AuthUser;
-import com.example.navigationbar.Entities.DaoMaster;
-import com.example.navigationbar.Entities.DaoSession;
-import com.example.navigationbar.MainActivity;
+import com.example.connect.Entities.AuthUser;
+import com.example.connect.Entities.DaoMaster;
+import com.example.connect.Entities.DaoSession;
+import com.example.connect.MainActivity;
 
 import org.greenrobot.greendao.database.Database;
 import org.json.JSONObject;

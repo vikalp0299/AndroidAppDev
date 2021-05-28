@@ -1,26 +1,25 @@
-package com.example.navigationbar.fragments;
+package com.example.connect.fragments;
 
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.navigationbar.R;
+import com.example.connect.R;
 
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.navigationbar.model.TeamData;
+import com.example.connect.model.TeamData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.navigationbar.adapters.TeamAdapter;
+import com.example.connect.adapters.TeamAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

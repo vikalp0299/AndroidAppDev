@@ -1,4 +1,4 @@
-package com.example.navigationbar;
+package com.example.connect;
 
 import android.os.Bundle;
 
@@ -6,11 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.navigationbar.fragments.AssignmentFragment;
-import com.example.navigationbar.fragments.CalendarFragment;
-import com.example.navigationbar.fragments.ChatFragment;
-import com.example.navigationbar.fragments.NotificationFragment;
-import com.example.navigationbar.fragments.TeamsFragment;
+import com.example.connect.fragments.AssignmentFragment;
+import com.example.connect.fragments.CalendarFragment;
+import com.example.connect.fragments.ChatFragment;
+import com.example.connect.fragments.NotificationFragment;
+import com.example.connect.fragments.TeamsFragment;
+import com.example.connect.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {

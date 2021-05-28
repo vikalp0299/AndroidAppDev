@@ -1,4 +1,4 @@
-package com.example.navigationbar.AuthenticationActivities;
+package com.example.connect.AuthenticationActivities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

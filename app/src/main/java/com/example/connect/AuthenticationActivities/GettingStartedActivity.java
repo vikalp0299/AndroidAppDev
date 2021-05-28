@@ -1,4 +1,4 @@
-package com.example.navigationbar.AuthenticationActivities;
+package com.example.connect.AuthenticationActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.navigationbar.R;
+import com.example.connect.R;
 
 import io.socket.client.Socket;
 

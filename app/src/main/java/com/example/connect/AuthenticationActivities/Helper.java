@@ -1,4 +1,4 @@
-package com.example.navigationbar.AuthenticationActivities;
+package com.example.connect.AuthenticationActivities;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
