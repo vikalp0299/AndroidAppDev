@@ -3,7 +3,6 @@ package com.example.connect.fragments.BottomNavigationFragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -191,7 +190,7 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
     //dialog box for adding team
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View v = inflater.inflate(R.layout.add_item, null);
+        View v = inflater.inflate(R.layout.add_team_item, null);
         final EditText teamName = v.findViewById(R.id.teamName);
         final EditText teamDetail = v.findViewById(R.id.teamDetails);
         Builder addDialog = new Builder(Objects.requireNonNull(getContext()));
