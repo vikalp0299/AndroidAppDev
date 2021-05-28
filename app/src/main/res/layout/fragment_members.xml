@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.BottomNavigationFragments.NotificationFragment">
+    tools:context=".fragments.TeamActivityFragments.MembersFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,6 +12,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Notification"/>
+            android:text="Members"/>
     </RelativeLayout>
+
+
 </FrameLayout>

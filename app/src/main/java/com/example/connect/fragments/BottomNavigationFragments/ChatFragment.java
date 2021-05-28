@@ -1,4 +1,4 @@
-package com.example.navigationbar.fragments;
+package com.example.connect.fragments.BottomNavigationFragments;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.navigationbar.R;
+import com.example.connect.R;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,8 +1,9 @@
-package com.example.navigationbar.fragments;
+package com.example.connect.fragments.BottomNavigationFragments;
 
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,7 +14,7 @@ import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
-import com.example.navigationbar.R;
+import com.example.connect.R;
 
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.core.view.MenuItemCompat;
@@ -21,9 +22,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.navigationbar.model.TeamData;
+import com.example.connect.model.Team;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.navigationbar.adapters.TeamAdapter;
+import com.example.connect.adapters.TeamsSectionAdapters.TeamAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import com.google.gson.reflect.TypeToken;
  */
 public class TeamsFragment extends Fragment implements SearchView.OnQueryTextListener{
 
-    private ArrayList<TeamData> teamList;
+    private ArrayList<Team> teamList;
     private TeamAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -127,7 +128,7 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final ArrayList<TeamData> filteredModelList = filter(teamList, newText);
+        final ArrayList<Team> filteredModelList = filter(teamList, newText);
         adapter.setFilter(filteredModelList);
         return true;
     }
@@ -137,11 +138,11 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
         return false;
     }
 
-    private ArrayList<TeamData> filter(ArrayList<TeamData> models, String query) {
+    private ArrayList<Team> filter(ArrayList<Team> models, String query) {
         query = query.toLowerCase();
 
-        final ArrayList<TeamData> filteredModelList = new ArrayList<>();
-        for (TeamData model : models) {
+        final ArrayList<Team> filteredModelList = new ArrayList<>();
+        for (Team model : models) {
             final String text = model.getTeamName().toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
@@ -200,21 +201,26 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
             String names = editText.getText().toString();
             editText = teamDetail;
             String details = editText.getText().toString();
-            TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new TeamData(names, details));
-            TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
-            Toast.makeText(getContext(), "Added Team Successfully", Toast.LENGTH_SHORT).show();
-            saveData();
+            if(names.equals("") || details.equals("")){
+                Toast.makeText(getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new Team(names, details));
+                TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
+                Toast.makeText(getContext(), "Added Team Successfully", Toast.LENGTH_SHORT).show();
+                saveData();
+            }
             dialog.dismiss();
         });
         addDialog.setNegativeButton("Cancel", (dialog, $noName_1) -> {
             dialog.dismiss();
-            Toast.makeText(getContext(), "Cancel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
         });
         addDialog.create();
         addDialog.show();
     }
 
-    public static ArrayList<TeamData> access$getTeamList$p(TeamsFragment $this) {
+    public static ArrayList<Team> access$getTeamList$p(TeamsFragment $this) {
         return $this.teamList;
     }
 
@@ -237,7 +243,7 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<TeamData>>() {}.getType();
+        Type type = new TypeToken<ArrayList<Team>>() {}.getType();
         teamList = gson.fromJson(json, type);
         if (teamList == null) {
             teamList = new ArrayList<>();

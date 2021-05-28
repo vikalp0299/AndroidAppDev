@@ -1,4 +1,4 @@
-package com.example.navigationbar.fragments;
+package com.example.connect.fragments.TeamActivityFragments;
 
 import android.os.Bundle;
 
@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.navigationbar.R;
+import com.example.connect.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AssignmentFragment#newInstance} factory method to
+ * Use the {@link FilesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AssignmentFragment extends Fragment {
+public class FilesFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class AssignmentFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AssignmentFragment() {
+    public FilesFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class AssignmentFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AssignmentFragment.
+     * @return A new instance of fragment FilesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AssignmentFragment newInstance(String param1, String param2) {
-        AssignmentFragment fragment = new AssignmentFragment();
+    public static FilesFragment newInstance(String param1, String param2) {
+        FilesFragment fragment = new FilesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class AssignmentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_assignment, container, false);
+        return inflater.inflate(R.layout.fragment_files, container, false);
     }
 }

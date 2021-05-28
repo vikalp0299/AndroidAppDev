@@ -1,13 +1,13 @@
-package com.example.navigationbar.adapters;
+package com.example.connect.adapters.TeamsSectionAdapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.navigationbar.fragments.AssignmentFragment;
-import com.example.navigationbar.fragments.FilesFragment;
-import com.example.navigationbar.fragments.PostsFragment;
+import com.example.connect.fragments.TeamActivityFragments.FilesFragment;
+import com.example.connect.fragments.TeamActivityFragments.MembersFragment;
+import com.example.connect.fragments.TeamActivityFragments.PostsFragment;
 
 public class PageAdapter extends FragmentPagerAdapter {
     private final int numOfTabs;
@@ -26,7 +26,7 @@ public class PageAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FilesFragment();
             case 2:
-                return new AssignmentFragment();
+                return new MembersFragment();
             default:
                 return null;
         }

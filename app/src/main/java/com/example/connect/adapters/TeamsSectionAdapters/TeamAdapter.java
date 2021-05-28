@@ -1,4 +1,4 @@
-package com.example.navigationbar.adapters;
+package com.example.connect.adapters.TeamsSectionAdapters;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -17,9 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.example.navigationbar.TeamActivity;
-import com.example.navigationbar.R;
-import com.example.navigationbar.model.TeamData;
+import com.example.connect.TeamActivity;
+import com.example.connect.R;
+import com.example.connect.model.Team;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public final class TeamAdapter extends Adapter {
 
     private final Context c;
-    private ArrayList<TeamData> teamList;
+    private ArrayList<Team> teamList;
 
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -40,7 +40,7 @@ public final class TeamAdapter extends Adapter {
 
     public void onBindViewHolder(TeamViewHolder holder, int position) {
         Object obj = this.teamList.get(position);
-        TeamData newList = (TeamData)obj;
+        Team newList = (Team)obj;
         holder.getName().setText(newList.getTeamName());
         holder.getDetail().setText(newList.getTeamDetail());
     }
@@ -53,17 +53,17 @@ public final class TeamAdapter extends Adapter {
         return this.teamList.size();
     }
 
-    public void setFilter(ArrayList<TeamData> countryModels){
+    public void setFilter(ArrayList<Team> countryModels){
         teamList = new ArrayList<>();
         teamList.addAll(countryModels);
         notifyDataSetChanged();
     }
 
-    public final ArrayList<TeamData> getTeamList() {
+    public final ArrayList<Team> getTeamList() {
         return this.teamList;
     }
 
-    public TeamAdapter(Context c, ArrayList<TeamData> teamList) {
+    public TeamAdapter(Context c, ArrayList<Team> teamList) {
         super();
         this.c = c;
         this.teamList = teamList;
@@ -86,7 +86,7 @@ public final class TeamAdapter extends Adapter {
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             Object obj = TeamAdapter.this.getTeamList().get(this.getAdapterPosition());
-            final TeamData position = (TeamData)obj;
+            final Team position = (Team)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
             popupMenus.inflate(R.menu.show_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
@@ -94,18 +94,23 @@ public final class TeamAdapter extends Adapter {
                 switch(it.getItemId()) {
                     case R.id.editText:
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_item, null);
-                        final EditText name = v1.findViewById(R.id.teamName);
-                        final EditText number = v1.findViewById(R.id.teamDetails);
+                        final EditText teamName = v1.findViewById(R.id.teamName);
+                        final EditText teamDetail = v1.findViewById(R.id.teamDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
-                            TeamData pos = position;
-                            EditText editText = name;
-                            pos.setTeamName(editText.getText().toString());
-                            pos = position;
-                            editText = number;
-                            pos.setTeamDetail(editText.getText().toString());
-                            TeamAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Team Information is Edited", Toast.LENGTH_SHORT).show();
-
+                            Team pos = position;
+                            EditText editText = teamName;
+                            String names = editText.getText().toString();
+                            editText = teamDetail;
+                            String details = editText.getText().toString();
+                            if(names.equals("") || details.equals("")){
+                                Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                pos.setTeamName(names);
+                                pos.setTeamDetail(details);
+                                TeamAdapter.this.notifyDataSetChanged();
+                                Toast.makeText(getV().getContext(), "Team Information is Edited", Toast.LENGTH_SHORT).show();
+                            }
                             dialog.dismiss();
                         }).setNegativeButton("Cancel", null).create().show();
                         bool = true;
