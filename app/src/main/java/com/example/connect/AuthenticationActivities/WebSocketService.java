@@ -137,6 +137,10 @@ public class WebSocketService extends Application {
         socket.disconnect();
     }
 
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
+
     public static Activity getCurrentActivity() {
         return currentActivity;
     }
