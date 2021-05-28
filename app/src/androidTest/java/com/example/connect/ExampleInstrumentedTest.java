@@ -1,4 +1,4 @@
-package com.example.navigationbar;
+package com.example.connect;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.navigationbar", appContext.getPackageName());
+        assertEquals("com.example.connect", appContext.getPackageName());
     }
 }

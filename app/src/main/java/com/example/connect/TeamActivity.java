@@ -1,11 +1,11 @@
-package com.example.navigationbar;
+package com.example.connect;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
-import com.example.navigationbar.adapters.PageAdapter;
+import com.example.connect.adapters.TeamsSectionAdapters.PageAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class TeamActivity extends AppCompatActivity {
@@ -13,7 +13,7 @@ public class TeamActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_team);
+        setContentView(R.layout.activity_team);
 
         TabLayout tabLayout = findViewById(R.id.tablayout);
         ViewPager viewPager = findViewById(R.id.viewPager);
