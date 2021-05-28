@@ -2,6 +2,7 @@ package com.example.navigationbar.AuthenticationActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.navigationbar.R;
 
@@ -64,6 +66,11 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
 
@@ -98,17 +105,18 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                currentlyEditing = "EMAIL";
                 emailLoader.setVisibility(View.VISIBLE);
+                isValidEmail = false;
                 email.setPadding(email.getPaddingLeft(),email.getPaddingTop(),25, email.getPaddingBottom());
+                email.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
                 if(Helper.validateEmailAddress(s.toString())){
-                    isValidEmail = true;
-                    emailLoader.setVisibility(View.INVISIBLE);
-                    email.setPadding(email.getPaddingLeft(),email.getPaddingTop(),10, email.getPaddingBottom());
-                    email.setCompoundDrawablesWithIntrinsicBounds(null,null,getApplicationContext().getDrawable(R.drawable.checkmark),null);
-                    // TODO:verify the integrity with server
-                }else{
-                    email.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("email",s.toString());
+                        wss.fireDataToServer(WebSocketService.CHECK_UNIQUE_EMAIL,json);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -145,7 +153,6 @@ public class RegisterActivity extends AppCompatActivity {
         password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                System.out.println("in password");
                 if (!hasFocus){
                     if (!Helper.validatePassword(password.getText().toString())){
                         isValidPassword = false;
@@ -241,9 +248,42 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    @Subscribe
-    public void onRegistration(String response){
-        System.out.println(response);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void isUniqueEmailEvent(UniqueEmailEvent response){
+        emailLoader.setVisibility(View.INVISIBLE);
+        if (response.status){
+            isValidEmail = true;
+            if (email.getText().toString().equals(response.email)){
+                email.setPadding(email.getPaddingLeft(),email.getPaddingTop(),10, email.getPaddingBottom());
+                email.setCompoundDrawablesWithIntrinsicBounds(null,null,getApplicationContext().getDrawable(R.drawable.checkmark),null);
+            }else{
+                isValidEmail = false;
+                email.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            }
+        }
+        else{
+            isValidEmail = false;
+            email.setError("account linked with this email already exists");
+        }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRegistration(RegistrationEvent response){
+        if (response.status){
+            System.out.println(response.status);
+            handleIntent();
+        }else{
+            Toast.makeText(this,"internal server error",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void handleIntent(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(),UserValidationActivity.class);
+                RegisterActivity.this.startActivity(intent);
+            }
+        });
+    }
 }
