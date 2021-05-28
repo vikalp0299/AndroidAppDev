@@ -24,19 +24,20 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragment5 = new CalendarFragment();
     final FragmentManager fm = getSupportFragmentManager();
 
-    Fragment active = fragment1;
+    Fragment active = fragment3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_nav);
+        bottomNavigationView.setSelectedItemId(R.id.Teams);
 
         fm.beginTransaction().add(R.id.Framelayout, fragment5, "5").hide(fragment5).commit();
         fm.beginTransaction().add(R.id.Framelayout, fragment4, "4").hide(fragment4).commit();
-        fm.beginTransaction().add(R.id.Framelayout, fragment3, "3").hide(fragment3).commit();
+        fm.beginTransaction().add(R.id.Framelayout, fragment3, "3").commit();
         fm.beginTransaction().add(R.id.Framelayout, fragment2, "2").hide(fragment2).commit();
-        fm.beginTransaction().add(R.id.Framelayout,fragment1, "1").commit();
+        fm.beginTransaction().add(R.id.Framelayout,fragment1, "1").hide(fragment1).commit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
         });
+
     }
 }
 

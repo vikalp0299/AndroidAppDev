@@ -34,7 +34,7 @@ public final class TeamAdapter extends Adapter {
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.list_item, parent, false);
+        View v = inflater.inflate(R.layout.team_item, parent, false);
         return new TeamViewHolder(v);
     }
 
@@ -93,7 +93,7 @@ public final class TeamAdapter extends Adapter {
                 boolean bool;
                 switch(it.getItemId()) {
                     case R.id.editText:
-                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_item, null);
+                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_team_item, null);
                         final EditText teamName = v1.findViewById(R.id.teamName);
                         final EditText teamDetail = v1.findViewById(R.id.teamDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
