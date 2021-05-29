@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.connect.model.Team;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.example.connect.adapters.TeamsSectionAdapters.TeamAdapter;
+import com.example.connect.adapters.RoomSectionAdapters.RoomAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -33,13 +33,13 @@ import com.google.gson.reflect.TypeToken;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TeamsFragment#newInstance} factory method to
+ * Use the {@link RoomFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeamsFragment extends Fragment implements SearchView.OnQueryTextListener{
+public class RoomFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private ArrayList<Team> teamList;
-    private TeamAdapter adapter;
+    private RoomAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,7 +51,7 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
     private String mParam2;
 
     
-    public TeamsFragment() {
+    public RoomFragment() {
         // Required empty public constructor
     }
 
@@ -63,11 +63,11 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TeamsFragment.
+     * @return A new instance of fragment RoomFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TeamsFragment newInstance(String param1, String param2) {
-        TeamsFragment fragment = new TeamsFragment();
+    public static RoomFragment newInstance(String param1, String param2) {
+        RoomFragment fragment = new RoomFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -80,14 +80,14 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_teams, container, false);
+        View view = inflater.inflate(R.layout.fragment_room, container, false);
         loadData();
         FloatingActionButton floatingActionButton = view.findViewById(R.id.addingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.mRecycler);
-        adapter = new TeamAdapter(getContext(), teamList);
+        adapter = new RoomAdapter(getContext(), teamList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        floatingActionButton.setOnClickListener(it -> TeamsFragment.this.addInfo());
+        floatingActionButton.setOnClickListener(it -> RoomFragment.this.addInfo());
         return view;
     }
 
@@ -190,7 +190,7 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
     //dialog box for adding team
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View v = inflater.inflate(R.layout.add_team_item, null);
+        View v = inflater.inflate(R.layout.add_room_item, null);
         final EditText teamName = v.findViewById(R.id.teamName);
         final EditText teamDetail = v.findViewById(R.id.teamDetails);
         Builder addDialog = new Builder(Objects.requireNonNull(getContext()));
@@ -204,8 +204,8 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
                 Toast.makeText(getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
             }
             else {
-                TeamsFragment.access$getTeamList$p(TeamsFragment.this).add(new Team(names, details));
-                TeamsFragment.access$getTeamAdapter$p(TeamsFragment.this).notifyDataSetChanged();
+                RoomFragment.access$getTeamList$p(RoomFragment.this).add(new Team(names, details));
+                RoomFragment.access$getTeamAdapter$p(RoomFragment.this).notifyDataSetChanged();
                 Toast.makeText(getContext(), "Added Team Successfully", Toast.LENGTH_SHORT).show();
                 saveData();
             }
@@ -219,15 +219,15 @@ public class TeamsFragment extends Fragment implements SearchView.OnQueryTextLis
         addDialog.show();
     }
 
-    public static ArrayList<Team> access$getTeamList$p(TeamsFragment $this) {
+    public static ArrayList<Team> access$getTeamList$p(RoomFragment $this) {
         return $this.teamList;
     }
 
-    public static TeamAdapter access$getTeamAdapter$p(TeamsFragment $this) {
+    public static RoomAdapter access$getTeamAdapter$p(RoomFragment $this) {
         return $this.adapter;
     }
 
-    //saves data i.e, saves created teams and any updates to it
+    //saves data i.e, saves created rooms and any updates to it
     private void saveData(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

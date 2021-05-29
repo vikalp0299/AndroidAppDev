@@ -1,6 +1,5 @@
 package com.example.connect.Entities;
 
-import com.example.connect.model.Member;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;

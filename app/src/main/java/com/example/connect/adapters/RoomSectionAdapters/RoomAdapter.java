@@ -1,4 +1,4 @@
-package com.example.connect.adapters.TeamsSectionAdapters;
+package com.example.connect.adapters.RoomSectionAdapters;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.example.connect.TeamActivity;
+import com.example.connect.RoomActivity;
 import com.example.connect.R;
 import com.example.connect.model.Team;
 
@@ -26,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 
-public final class TeamAdapter extends Adapter {
+public final class RoomAdapter extends Adapter {
 
     private final Context c;
     private ArrayList<Team> teamList;
@@ -34,7 +34,7 @@ public final class TeamAdapter extends Adapter {
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.team_item, parent, false);
+        View v = inflater.inflate(R.layout.room_item, parent, false);
         return new TeamViewHolder(v);
     }
 
@@ -63,7 +63,7 @@ public final class TeamAdapter extends Adapter {
         return this.teamList;
     }
 
-    public TeamAdapter(Context c, ArrayList<Team> teamList) {
+    public RoomAdapter(Context c, ArrayList<Team> teamList) {
         super();
         this.c = c;
         this.teamList = teamList;
@@ -85,7 +85,7 @@ public final class TeamAdapter extends Adapter {
         }
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-            Object obj = TeamAdapter.this.getTeamList().get(this.getAdapterPosition());
+            Object obj = RoomAdapter.this.getTeamList().get(this.getAdapterPosition());
             final Team position = (Team)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
             popupMenus.inflate(R.menu.show_menu);
@@ -93,7 +93,7 @@ public final class TeamAdapter extends Adapter {
                 boolean bool;
                 switch(it.getItemId()) {
                     case R.id.editText:
-                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_team_item, null);
+                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
                         final EditText teamName = v1.findViewById(R.id.teamName);
                         final EditText teamDetail = v1.findViewById(R.id.teamDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
@@ -108,7 +108,7 @@ public final class TeamAdapter extends Adapter {
                             else {
                                 pos.setTeamName(names);
                                 pos.setTeamDetail(details);
-                                TeamAdapter.this.notifyDataSetChanged();
+                                RoomAdapter.this.notifyDataSetChanged();
                                 Toast.makeText(getV().getContext(), "Team Information is Edited", Toast.LENGTH_SHORT).show();
                             }
                             dialog.dismiss();
@@ -117,8 +117,8 @@ public final class TeamAdapter extends Adapter {
                         break;
                     case R.id.delete:
                         (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Team").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            TeamAdapter.this.getTeamList().remove(TeamViewHolder.this.getAdapterPosition());
-                            TeamAdapter.this.notifyDataSetChanged();
+                            RoomAdapter.this.getTeamList().remove(TeamViewHolder.this.getAdapterPosition());
+                            RoomAdapter.this.notifyDataSetChanged();
                             Toast.makeText(getV().getContext(), "Deleted this Team", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }).setNegativeButton("No", null).create().show();
@@ -173,7 +173,7 @@ public final class TeamAdapter extends Adapter {
 
         public void onItemClick(){
             final Intent intent;
-            intent =  new Intent(getV().getContext(), TeamActivity.class);
+            intent =  new Intent(getV().getContext(), RoomActivity.class);
             getV().getContext().startActivity(intent);
         }
     }

@@ -1,4 +1,4 @@
-package com.example.connect.fragments.TeamActivityFragments;
+package com.example.connect.fragments.RoomActivityFragments;
 
 import android.os.Bundle;
 
