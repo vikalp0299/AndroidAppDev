@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/tile"
+        android:id="@+id/roomTile"
         android:layout_weight="1"
         android:orientation="vertical"
         android:layout_margin="15dp"
@@ -22,19 +22,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/mTitle"
+            android:id="@+id/roomTitle"
             android:text="Title"
             android:textColor="@color/black"
-            android:textSize="19sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_margin="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <TextView
-            android:id="@+id/mSubTitle"
+            android:id="@+id/roomDetail"
             android:text="About"
             android:textColor="@android:color/darker_gray"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:layout_margin="6dp"
             android:layout_width="match_parent"
