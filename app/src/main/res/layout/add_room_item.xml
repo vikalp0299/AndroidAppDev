@@ -14,48 +14,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:text="Add Team Information"
+            android:text="Add Room Information"
             android:textStyle="bold"
-            android:textSize="19sp"
+            android:textSize="16sp"
             android:textColor="@color/white"
-            android:background="@color/purple_500"
+            android:background="@drawable/add_room_textview_background"
             android:padding="10dp"
             android:elevation="15dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <EditText
-            android:id="@+id/teamName"
-            android:hint="Title"
-            android:inputType="textPersonName"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:background="@drawable/shape_background"
-            android:padding="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"/>
 
         <EditText
-            android:id="@+id/teamDetails"
+            android:id="@+id/roomName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
+            android:hint="Title"
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/roomDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/shape_background"
             android:hint="About"
             android:inputType="textShortMessage"
             android:padding="15dp"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
 
 

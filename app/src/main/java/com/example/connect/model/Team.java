@@ -30,7 +30,7 @@ public final class Team {
     }
 
     public String toString() {
-        return "Team(teamName=" + this.teamName + ", teamDetail=" + this.teamDetail + ")";
+        return "Team(roomName=" + this.teamName + ", teamDetail=" + this.teamDetail + ")";
     }
 
     public int hashCode() {

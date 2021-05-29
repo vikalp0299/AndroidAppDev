@@ -95,8 +95,8 @@ public final class RoomAdapter extends Adapter {
                 switch(it.getItemId()) {
                     case R.id.editText:
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
-                        final EditText teamName = v1.findViewById(R.id.teamName);
-                        final EditText teamDetail = v1.findViewById(R.id.teamDetails);
+                        final EditText teamName = v1.findViewById(R.id.roomName);
+                        final EditText teamDetail = v1.findViewById(R.id.roomDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
                             Team pos = position;
                             EditText editText = teamName;

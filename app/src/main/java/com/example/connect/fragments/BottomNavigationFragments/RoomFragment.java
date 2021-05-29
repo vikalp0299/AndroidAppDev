@@ -191,8 +191,8 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View v = inflater.inflate(R.layout.add_room_item, null);
-        final EditText teamName = v.findViewById(R.id.teamName);
-        final EditText teamDetail = v.findViewById(R.id.teamDetails);
+        final EditText teamName = v.findViewById(R.id.roomName);
+        final EditText teamDetail = v.findViewById(R.id.roomDetails);
         Builder addDialog = new Builder(Objects.requireNonNull(getContext()));
         addDialog.setView(v);
         addDialog.setPositiveButton("Ok", (dialog, $noName_1) -> {
