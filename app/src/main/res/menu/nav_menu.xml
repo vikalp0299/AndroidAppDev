@@ -11,9 +11,9 @@
         android:icon="@drawable/ic_chat"
         />
     <item
-        android:id="@+id/Teams"
-        android:title="@string/teams"
-        android:icon="@drawable/ic_teams"
+        android:id="@+id/Rooms"
+        android:title="@string/rooms"
+        android:icon="@drawable/ic_room"
         />
     <item
         android:id="@+id/Assignment"

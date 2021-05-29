@@ -10,7 +10,7 @@ import com.example.connect.fragments.BottomNavigationFragments.AssignmentFragmen
 import com.example.connect.fragments.BottomNavigationFragments.CalendarFragment;
 import com.example.connect.fragments.BottomNavigationFragments.ChatFragment;
 import com.example.connect.fragments.BottomNavigationFragments.NotificationFragment;
-import com.example.connect.fragments.BottomNavigationFragments.TeamsFragment;
+import com.example.connect.fragments.BottomNavigationFragments.RoomFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     final Fragment fragment1 = new NotificationFragment();
     final Fragment fragment2 = new ChatFragment();
-    final Fragment fragment3 = new TeamsFragment();
+    final Fragment fragment3 = new RoomFragment();
     final Fragment fragment4 = new AssignmentFragment();
     final Fragment fragment5 = new CalendarFragment();
     final FragmentManager fm = getSupportFragmentManager();
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        bottomNavigationView.setSelectedItemId(R.id.Teams);
+        bottomNavigationView.setSelectedItemId(R.id.Rooms);
 
         fm.beginTransaction().add(R.id.Framelayout, fragment5, "5").hide(fragment5).commit();
         fm.beginTransaction().add(R.id.Framelayout, fragment4, "4").hide(fragment4).commit();
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     fm.beginTransaction().hide(active).show(fragment2).commit();
                     active = fragment2;
                     return true;
-                case R.id.Teams:
+                case R.id.Rooms:
                     fm.beginTransaction().hide(active).show(fragment3).commit();
                     active = fragment3;
                     return true;

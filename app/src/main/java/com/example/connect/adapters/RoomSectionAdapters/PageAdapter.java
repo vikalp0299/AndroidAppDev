@@ -1,13 +1,13 @@
-package com.example.connect.adapters.TeamsSectionAdapters;
+package com.example.connect.adapters.RoomSectionAdapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.connect.fragments.TeamActivityFragments.FilesFragment;
-import com.example.connect.fragments.TeamActivityFragments.MembersFragment;
-import com.example.connect.fragments.TeamActivityFragments.PostsFragment;
+import com.example.connect.fragments.RoomActivityFragments.FilesFragment;
+import com.example.connect.fragments.RoomActivityFragments.MembersFragment;
+import com.example.connect.fragments.RoomActivityFragments.PostsFragment;
 
 public class PageAdapter extends FragmentPagerAdapter {
     private final int numOfTabs;
