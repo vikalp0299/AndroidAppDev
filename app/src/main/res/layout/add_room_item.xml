@@ -16,11 +16,11 @@
         <TextView
             android:text="Add Room Information"
             android:textStyle="bold"
-            android:textSize="19sp"
+            android:textSize="16sp"
             android:textColor="@color/white"
             android:background="@drawable/add_room_textview_background"
             android:padding="10dp"
-            android:elevation="10dp"
+            android:elevation="15dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_width="match_parent"
@@ -38,8 +38,9 @@
             android:hint="Title"
             android:inputType="textPersonName"
             android:padding="15dp"
-            android:textColor="@color/purple_500"
-            android:textSize="14sp"/>
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/roomDetails"
@@ -52,8 +53,9 @@
             android:hint="About"
             android:inputType="textShortMessage"
             android:padding="15dp"
-            android:textColor="@color/purple_500"
-            android:textSize="14sp" />
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
 
 

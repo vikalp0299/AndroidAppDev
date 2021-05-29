@@ -16,7 +16,7 @@
         <TextView
             android:text="Add Member Information"
             android:textStyle="bold"
-            android:textSize="19sp"
+            android:textSize="16sp"
             android:textColor="@color/white"
             android:background="@drawable/add_room_textview_background"
             android:padding="10dp"
@@ -24,13 +24,14 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"/>
         <EditText
             android:id="@+id/memberName"
             android:hint="Name"
             android:inputType="textPersonName"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:padding="15dp"
             android:layout_marginLeft="15dp"
@@ -51,8 +52,8 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:padding="15dp"
-            android:textColor="@color/purple_500"
-            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
 
