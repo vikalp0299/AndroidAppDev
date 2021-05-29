@@ -31,6 +31,9 @@ public class Room {
     })
     public List<RoomMember> members;
 
+    @NotNull
+    public String createdByUser;
+
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -39,12 +42,14 @@ public class Room {
     @Generated(hash = 740313876)
     private transient RoomDao myDao;
 
-    @Generated(hash = 1611638136)
-    public Room(long id, String rid, @NotNull String name, String description) {
+    @Generated(hash = 1144035398)
+    public Room(long id, String rid, @NotNull String name, String description,
+            @NotNull String createdByUser) {
         this.id = id;
         this.rid = rid;
         this.name = name;
         this.description = description;
+        this.createdByUser = createdByUser;
     }
 
     @Generated(hash = 703125385)
@@ -145,6 +150,14 @@ public class Room {
     @Generated(hash = 1358688666)
     public synchronized void resetMembers() {
         members = null;
+    }
+
+    public String getCreatedByUser() {
+        return this.createdByUser;
+    }
+
+    public void setCreatedByUser(String createdByUser) {
+        this.createdByUser = createdByUser;
     }
 
     /** called by internal mechanisms, do not call yourself. */

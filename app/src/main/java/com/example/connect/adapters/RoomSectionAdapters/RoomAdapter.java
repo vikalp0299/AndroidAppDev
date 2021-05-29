@@ -88,6 +88,7 @@ public final class RoomAdapter extends Adapter {
             Object obj = RoomAdapter.this.getTeamList().get(this.getAdapterPosition());
             final Team position = (Team)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
+
             popupMenus.inflate(R.menu.show_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
                 boolean bool;
