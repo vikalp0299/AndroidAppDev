@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.List;
 
-@Entity(active = true)
+@Entity(active = true,generateGettersSetters = true,generateConstructors = true)
 public class Room {
     @Id(autoincrement = true)
     private long id;

@@ -2,6 +2,8 @@ package com.example.connect.AuthenticationActivities;
 
 import com.example.connect.Entities.AuthUser;
 import com.example.connect.Entities.DaoSession;
+import com.example.connect.Entities.Room;
+import com.example.connect.model.Team;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -133,6 +135,35 @@ public class WSSEmitters {
             }
         }
     };
+    public Emitter.Listener onCreatedRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                boolean status = json.getBoolean("status");
+                if(status){
+                    JSONObject response = json.getJSONObject("response");
+                    String rid = response.getString("rid");
+                    String name = response.getString("name");
+                    String description = response.getString("description");
+                    String createdBy = response.getString("createdBy");
+
+                    Room room = new Room();
+                    room.setName(name);
+                    room.setCreatedByUser(createdBy);
+                    room.setDescription(description);
+                    room.setRid(rid);
+                    daoSession.getRoomDao().insert(room);
+                    EventBus.getDefault().post(new RoomCreationEvent(status,room));
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new RoomCreationEvent(false));
+        }
+    };
+
 }
 
 class LoginEvent{
@@ -151,6 +182,17 @@ class UniqueEmailEvent{
     }
 }
 
+class RoomCreationEvent{
+    boolean status;
+    Room room;
+    RoomCreationEvent(boolean status){
+        this.status = status;
+    }
+    RoomCreationEvent(boolean status,Room room){
+        this.status = status;
+        this.room = room;
+    }
+}
 
 class RegistrationEvent{
     boolean status;

@@ -32,6 +32,8 @@ public class WebSocketService extends Application {
     public static final String AUTH_TOKEN="auth_token";
     public static final String LOGIN="login";
     public static final String LOGIN_RESULT = "login_result";
+    public static final String CREATE_ROOM = "create_room";
+    public static final String CREATED_ROOM = "created_room";
 
     private static final String hostUrl = "https://56b6b7c6deba.ngrok.io";
     private Socket socket;
@@ -62,6 +64,7 @@ public class WebSocketService extends Application {
             socket.on(IS_UNIQUE_EMAIL,emitters.isUniqueEmail);
             socket.on(AUTH_TOKEN,emitters.onAuthToken);
             socket.on(LOGIN_RESULT,emitters.onLogin);
+            socket.on(CREATED_ROOM,emitters.onCreatedRoom);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
