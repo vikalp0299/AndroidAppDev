@@ -31,31 +31,31 @@ public final class RoomAdapter extends Adapter {
     private final Context c;
     private ArrayList<Room> roomList;
 
-    public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RoomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.room_item, parent, false);
-        return new TeamViewHolder(v);
+        return new RoomViewHolder(v);
     }
 
-    public void onBindViewHolder(TeamViewHolder holder, int position) {
+    public void onBindViewHolder(RoomViewHolder holder, int position) {
         Object obj = this.roomList.get(position);
         Room newList = (Room)obj;
-        holder.getName().setText(newList.getName());
-        holder.getDetail().setText(newList.getDescription());
+        holder.getTitle().setText(newList.getName());
+        holder.getDesc().setText(newList.getDescription());
     }
 
     public void onBindViewHolder(@NonNull ViewHolder vh, int i) {
-        this.onBindViewHolder((TeamViewHolder)vh, i);
+        this.onBindViewHolder((RoomViewHolder)vh, i);
     }
 
     public int getItemCount() {
         return this.roomList.size();
     }
 
-    public void setFilter(ArrayList<Room> countryModels){
+    public void setFilter(ArrayList<Room> roomModels){
         roomList = new ArrayList<>();
-        roomList.addAll(countryModels);
+        roomList.addAll(roomModels);
         notifyDataSetChanged();
     }
 
@@ -63,13 +63,13 @@ public final class RoomAdapter extends Adapter {
         return this.roomList;
     }
 
-    public RoomAdapter(Context c, ArrayList<Room> teamList) {
+    public RoomAdapter(Context c, ArrayList<Room> roomList) {
         super();
         this.c = c;
-        this.roomList = teamList;
+        this.roomList = roomList;
     }
 
-    public final class TeamViewHolder extends ViewHolder {
+    public final class RoomViewHolder extends ViewHolder {
 
         private TextView name;
         private TextView detail;
@@ -77,10 +77,10 @@ public final class RoomAdapter extends Adapter {
         private LinearLayout tile;
         private final View v;
 
-        public final TextView getName() {
+        public final TextView getTitle() {
             return this.name;
         }
-        public final TextView getDetail() {
+        public final TextView getDesc() {
             return this.detail;
         }
 
@@ -95,13 +95,13 @@ public final class RoomAdapter extends Adapter {
                 switch(it.getItemId()) {
                     case R.id.editText:
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
-                        final EditText teamName = v1.findViewById(R.id.roomName);
-                        final EditText teamDetail = v1.findViewById(R.id.roomDetails);
+                        final EditText roomName = v1.findViewById(R.id.roomName);
+                        final EditText roomDetail = v1.findViewById(R.id.roomDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
                             Room pos = position;
-                            EditText editText = teamName;
+                            EditText editText = roomName;
                             String names = editText.getText().toString();
-                            editText = teamDetail;
+                            editText = roomDetail;
                             String details = editText.getText().toString();
                             if(names.equals("") || details.equals("")){
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
@@ -118,7 +118,7 @@ public final class RoomAdapter extends Adapter {
                         break;
                     case R.id.delete:
                         (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Room").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            RoomAdapter.this.getRoomList().remove(TeamViewHolder.this.getAdapterPosition());
+                            RoomAdapter.this.getRoomList().remove(RoomViewHolder.this.getAdapterPosition());
                             RoomAdapter.this.notifyDataSetChanged();
                             Toast.makeText(getV().getContext(), "Deleted this Room", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
@@ -144,19 +144,19 @@ public final class RoomAdapter extends Adapter {
             return this.v;
         }
 
-        public TeamViewHolder(View v) {
+        public RoomViewHolder(View v) {
             super(v);
             this.v = v;
-            View view = this.v.findViewById(R.id.mTitle);
+            View view = this.v.findViewById(R.id.roomTitle);
             this.name = (TextView)view;
-            view = this.v.findViewById(R.id.mSubTitle);
+            view = this.v.findViewById(R.id.roomDetail);
             this.detail = (TextView)view;
             view = this.v.findViewById(R.id.mMenus);
             this.mMenus = (ImageView)view;
-            view = this.v.findViewById(R.id.tile);
+            view = this.v.findViewById(R.id.roomTile);
             this.tile = (LinearLayout)view;
             this.mMenus.setOnClickListener(it -> {
-                TeamViewHolder viewHolder = TeamViewHolder.this;
+                RoomViewHolder viewHolder = RoomViewHolder.this;
                 try {
                     viewHolder.popupMenus(it);
                 } catch (NoSuchFieldException e) {
