@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="8dp"
-    app:cardMaxElevation="5dp"
-    android:layout_margin="10dp"
+    android:background="@drawable/border"
     >
     <LinearLayout
         android:orientation="horizontal"
@@ -14,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/memberTile"
+            android:id="@+id/memTile"
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_margin="15dp"
@@ -22,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/memberName"
+                android:id="@+id/memName"
                 android:text="Name"
                 android:textColor="@color/black"
                 android:textSize="19sp"
@@ -31,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:id="@+id/memberEmail"
+                android:id="@+id/memEmail"
                 android:text="Email"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="15sp"
@@ -41,7 +38,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <ImageView
-            android:id="@+id/memberMenus"
+            android:id="@+id/mMenus"
             android:src="@drawable/ic_more"
             android:layout_gravity="center"
             android:layout_margin="10dp"
@@ -49,4 +46,4 @@
             android:layout_height="40dp"/>
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</RelativeLayout>
