@@ -13,6 +13,10 @@ import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.connect.AuthenticationActivities.RoomCreationEvent;
+import com.example.connect.AuthenticationActivities.WebSocketService;
+import com.example.connect.Entities.DaoSession;
+import com.example.connect.Entities.Room;
 import com.example.connect.R;
 
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -21,15 +25,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.connect.model.Team;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.connect.adapters.RoomSectionAdapters.RoomAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,8 +49,9 @@ import com.google.gson.reflect.TypeToken;
  */
 public class RoomFragment extends Fragment implements SearchView.OnQueryTextListener{
 
-    private ArrayList<Team> teamList;
+    private ArrayList<com.example.connect.Entities.Room> rooms = new ArrayList<>();
     private RoomAdapter adapter;
+    WebSocketService webSocketService;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,10 +93,11 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_room, container, false);
-        loadData();
+        webSocketService = (WebSocketService)getActivity().getApplication();
+        loadDaoData();
         FloatingActionButton floatingActionButton = view.findViewById(R.id.addingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.mRecycler);
-        adapter = new RoomAdapter(getContext(), teamList);
+        adapter = new RoomAdapter(getContext(), rooms);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         floatingActionButton.setOnClickListener(it -> RoomFragment.this.addInfo());
@@ -112,7 +125,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Do something when collapsed
-                adapter.setFilter(teamList);
+                adapter.setFilter(rooms);
                 return true; // Return true to collapse action view
             }
 
@@ -127,7 +140,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final ArrayList<Team> filteredModelList = filter(teamList, newText);
+        final ArrayList<Room> filteredModelList = filter(rooms, newText);
         adapter.setFilter(filteredModelList);
         return true;
     }
@@ -137,12 +150,12 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         return false;
     }
 
-    private ArrayList<Team> filter(ArrayList<Team> models, String query) {
+    private ArrayList<Room> filter(ArrayList<Room> models, String query) {
         query = query.toLowerCase();
 
-        final ArrayList<Team> filteredModelList = new ArrayList<>();
-        for (Team model : models) {
-            final String text = model.getTeamName().toLowerCase();
+        final ArrayList<Room> filteredModelList = new ArrayList<>();
+        for (Room model : models) {
+            final String text = model.getName().toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }
@@ -150,64 +163,60 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         return filteredModelList;
     }
 
-    //saves fragment data on different states
+    //Event listeners
     @Override
-    public void onResume() {
-        super.onResume();
-        saveData();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveData();
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        saveData();
+        EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        saveData();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        saveData();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        saveData();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnRoomAdded(RoomCreationEvent event){
+        if(event.status){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    RoomFragment.access$getTeamList$p(RoomFragment.this).add(event.room);
+                    RoomFragment.access$getTeamAdapter$p(RoomFragment.this).notifyDataSetChanged();
+                    Toast.makeText(getContext(), "Added Room Successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     //dialog box for adding team
     private void addInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View v = inflater.inflate(R.layout.add_room_item, null);
-        final EditText teamName = v.findViewById(R.id.roomName);
-        final EditText teamDetail = v.findViewById(R.id.roomDetails);
+        final EditText roomName = v.findViewById(R.id.roomName);
+        final EditText roomDesc = v.findViewById(R.id.roomDetails);
         Builder addDialog = new Builder(Objects.requireNonNull(getContext()));
         addDialog.setView(v);
         addDialog.setPositiveButton("Ok", (dialog, $noName_1) -> {
-            EditText editText = teamName;
+            EditText editText = roomName;
             String names = editText.getText().toString();
-            editText = teamDetail;
+            editText = roomDesc;
             String details = editText.getText().toString();
             if(names.equals("") || details.equals("")){
                 Toast.makeText(getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
             }
             else {
-                RoomFragment.access$getTeamList$p(RoomFragment.this).add(new Team(names, details));
-                RoomFragment.access$getTeamAdapter$p(RoomFragment.this).notifyDataSetChanged();
-                Toast.makeText(getContext(), "Added Team Successfully", Toast.LENGTH_SHORT).show();
-                saveData();
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("uid",webSocketService.getAuthUser().getUid());
+                    json.put("rid",null);
+                    json.put("name",names);
+                    json.put("description",details);
+                    webSocketService.fireDataToServer(WebSocketService.CREATE_ROOM,json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             dialog.dismiss();
         });
@@ -219,8 +228,8 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         addDialog.show();
     }
 
-    public static ArrayList<Team> access$getTeamList$p(RoomFragment $this) {
-        return $this.teamList;
+    public static ArrayList<Room> access$getTeamList$p(RoomFragment $this) {
+        return $this.rooms;
     }
 
     public static RoomAdapter access$getTeamAdapter$p(RoomFragment $this) {
@@ -228,24 +237,23 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     }
 
     //saves data i.e, saves created rooms and any updates to it
-    private void saveData(){
+    /*private void saveData(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(teamList);
+        String json = gson.toJson(rooms);
         editor.putString("task list", json);
         editor.apply();
-    }
+    }*/
 
-    //loads team data on relaunching of application
-    private void loadData() {
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("task list", null);
-        Type type = new TypeToken<ArrayList<Team>>() {}.getType();
-        teamList = gson.fromJson(json, type);
-        if (teamList == null) {
-            teamList = new ArrayList<>();
+
+    //loading data using daoSession
+    private void loadDaoData(){
+        rooms.clear();
+        DaoSession daoSession = webSocketService.getDaoSession();
+        List<com.example.connect.Entities.Room> roomList = daoSession.getRoomDao().queryBuilder().list();
+        for(Room room : roomList){
+            rooms.add(room);
         }
     }
 

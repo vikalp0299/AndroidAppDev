@@ -17,9 +17,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.connect.Entities.Room;
 import com.example.connect.RoomActivity;
 import com.example.connect.R;
-import com.example.connect.model.Team;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public final class RoomAdapter extends Adapter {
 
     private final Context c;
-    private ArrayList<Team> teamList;
+    private ArrayList<Room> roomList;
 
     public TeamViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -39,10 +39,10 @@ public final class RoomAdapter extends Adapter {
     }
 
     public void onBindViewHolder(TeamViewHolder holder, int position) {
-        Object obj = this.teamList.get(position);
-        Team newList = (Team)obj;
-        holder.getName().setText(newList.getTeamName());
-        holder.getDetail().setText(newList.getTeamDetail());
+        Object obj = this.roomList.get(position);
+        Room newList = (Room)obj;
+        holder.getName().setText(newList.getName());
+        holder.getDetail().setText(newList.getDescription());
     }
 
     public void onBindViewHolder(@NonNull ViewHolder vh, int i) {
@@ -50,23 +50,23 @@ public final class RoomAdapter extends Adapter {
     }
 
     public int getItemCount() {
-        return this.teamList.size();
+        return this.roomList.size();
     }
 
-    public void setFilter(ArrayList<Team> countryModels){
-        teamList = new ArrayList<>();
-        teamList.addAll(countryModels);
+    public void setFilter(ArrayList<Room> countryModels){
+        roomList = new ArrayList<>();
+        roomList.addAll(countryModels);
         notifyDataSetChanged();
     }
 
-    public final ArrayList<Team> getTeamList() {
-        return this.teamList;
+    public final ArrayList<Room> getRoomList() {
+        return this.roomList;
     }
 
-    public RoomAdapter(Context c, ArrayList<Team> teamList) {
+    public RoomAdapter(Context c, ArrayList<Room> teamList) {
         super();
         this.c = c;
-        this.teamList = teamList;
+        this.roomList = teamList;
     }
 
     public final class TeamViewHolder extends ViewHolder {
@@ -85,8 +85,8 @@ public final class RoomAdapter extends Adapter {
         }
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-            Object obj = RoomAdapter.this.getTeamList().get(this.getAdapterPosition());
-            final Team position = (Team)obj;
+            Object obj = RoomAdapter.this.getRoomList().get(this.getAdapterPosition());
+            final Room position = (Room)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
             popupMenus.inflate(R.menu.show_menu);
@@ -98,7 +98,7 @@ public final class RoomAdapter extends Adapter {
                         final EditText teamName = v1.findViewById(R.id.roomName);
                         final EditText teamDetail = v1.findViewById(R.id.roomDetails);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
-                            Team pos = position;
+                            Room pos = position;
                             EditText editText = teamName;
                             String names = editText.getText().toString();
                             editText = teamDetail;
@@ -107,20 +107,20 @@ public final class RoomAdapter extends Adapter {
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                pos.setTeamName(names);
-                                pos.setTeamDetail(details);
+                                pos.setName(names);
+                                pos.setDescription(details);
                                 RoomAdapter.this.notifyDataSetChanged();
-                                Toast.makeText(getV().getContext(), "Team Information is Edited", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getV().getContext(), "Room Information is Edited", Toast.LENGTH_SHORT).show();
                             }
                             dialog.dismiss();
                         }).setNegativeButton("Cancel", null).create().show();
                         bool = true;
                         break;
                     case R.id.delete:
-                        (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Team").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            RoomAdapter.this.getTeamList().remove(TeamViewHolder.this.getAdapterPosition());
+                        (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Room").setPositiveButton("Yes", (dialog, $noName_1) -> {
+                            RoomAdapter.this.getRoomList().remove(TeamViewHolder.this.getAdapterPosition());
                             RoomAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Deleted this Team", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getV().getContext(), "Deleted this Room", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }).setNegativeButton("No", null).create().show();
                         bool = true;

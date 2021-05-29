@@ -1,13 +1,16 @@
 package com.example.connect.AuthenticationActivities;
 
+import android.util.Log;
+
 import com.example.connect.Entities.AuthUser;
 import com.example.connect.Entities.DaoSession;
 import com.example.connect.Entities.Room;
-import com.example.connect.model.Team;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.UUID;
 
 import io.socket.emitter.Emitter;
 
@@ -141,6 +144,7 @@ public class WSSEmitters {
             JSONObject json = (JSONObject) args[0];
             try {
                 boolean status = json.getBoolean("status");
+
                 if(status){
                     JSONObject response = json.getJSONObject("response");
                     String rid = response.getString("rid");
@@ -153,8 +157,10 @@ public class WSSEmitters {
                     room.setCreatedByUser(createdBy);
                     room.setDescription(description);
                     room.setRid(rid);
+                    room.setId((System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L));
                     daoSession.getRoomDao().insert(room);
                     EventBus.getDefault().post(new RoomCreationEvent(status,room));
+
                     return;
                 }
             } catch (JSONException e) {
@@ -182,17 +188,7 @@ class UniqueEmailEvent{
     }
 }
 
-class RoomCreationEvent{
-    boolean status;
-    Room room;
-    RoomCreationEvent(boolean status){
-        this.status = status;
-    }
-    RoomCreationEvent(boolean status,Room room){
-        this.status = status;
-        this.room = room;
-    }
-}
+
 
 class RegistrationEvent{
     boolean status;
