@@ -24,6 +24,8 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class WebSocketService extends Application {
+    public static final String DELETED_ROOM = "deleted_room";
+    public static final String DELETE_ROOM = "delete_room";
     public static final String REGISTER_USER = "register_user";
     public static final String IS_VERIFIED = "is_verified";
     public static final String CHECK_UNIQUE_EMAIL = "check_email_unique";

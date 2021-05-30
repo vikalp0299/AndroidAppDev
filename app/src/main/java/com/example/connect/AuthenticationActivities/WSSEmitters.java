@@ -169,6 +169,35 @@ public class WSSEmitters {
             EventBus.getDefault().post(new RoomCreationEvent(false));
         }
     };
+    public Emitter.Listener onDeletedRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                boolean status = json.getBoolean("status");
+
+                if(status){
+                    JSONObject response = json.getJSONObject("response");
+                    String rid = response.getString("rid");
+                    String name = response.getString("name");
+                    String description = response.getString("description");
+                    String createdBy = response.getString("createdBy");
+
+                    EventBus.getDefault().post(new RoomCreationEvent(status));
+
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new RoomCreationEvent(false));
+        }
+    };
+
+
+}
+
+class RoomDeletionEvent{
 
 }
 
