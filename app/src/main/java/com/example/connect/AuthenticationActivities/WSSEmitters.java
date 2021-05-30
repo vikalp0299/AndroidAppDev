@@ -158,7 +158,7 @@ public class WSSEmitters {
                     room.setCreatedByUser(createdBy);
                     room.setDescription(description);
                     room.setRid(rid);
-                    room.setId((System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L));
+                    room.setId(Helper.getUniqueLongID());
                     daoSession.getRoomDao().insert(room);
                     EventBus.getDefault().post(new RoomCreationEvent(status,room));
 
@@ -173,13 +173,22 @@ public class WSSEmitters {
     public Emitter.Listener onDeletedRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            Log.d("Deleted", "i hope its working");
             JSONObject json = (JSONObject) args[0];
             try {
                 boolean status = json.getBoolean("status");
                 if(status){
                     long id = json.getLong("id");
+                    String name = json.getString("name");
+                    String description = json.getString("description");
+                    String rid = json.getString("rid");
+                    Room room = new Room();
+                    room.setRid(rid);
+                    room.setName(name);
+                    room.setDescription(description);
+                    room.setId(id);
                     daoSession.getRoomDao().deleteByKey(id);
-                    EventBus.getDefault().post(new RoomDeletionEvent(true,id));
+                    EventBus.getDefault().post(new RoomDeletionEvent(true,room));
                     return;
                 }
             } catch (JSONException e) {
@@ -197,14 +206,20 @@ public class WSSEmitters {
                 boolean status = json.getBoolean("status");
                 if(status){
                     JSONObject data = json.getJSONObject("response");
-                    String name = data.getString("rid");
+                    String name = data.getString("name");
+                    Log.d("name :::::: ", name);
                     String description = data.getString("description");
                     long id = data.getLong("id");
-                    Room room = daoSession.getRoomDao().load(id);
+                    String rid = data.getString("rid");
+                    String createdBy = data.getString("createdBy");
+                    Room room = new Room();
+                    room.setId(id);
+                    room.setRid(rid);
                     room.setName(name);
+                    room.setCreatedByUser(createdBy);
                     room.setDescription(description);
                     daoSession.getRoomDao().update(room);
-                    EventBus.getDefault().post(new RoomEditedEvent(true));
+                    EventBus.getDefault().post(new RoomEditedEvent(true,room));
                     return;
                 }
             } catch (JSONException e) {

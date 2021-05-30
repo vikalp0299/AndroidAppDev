@@ -2,14 +2,16 @@ package com.example.connect.AuthenticationActivities;
 
 import android.util.Log;
 
+import com.example.connect.Entities.Room;
+
 public class RoomDeletionEvent{
     public boolean status;
-    public long id;
+    public Room room;
     RoomDeletionEvent(boolean status){
         this.status = status;
     }
-    RoomDeletionEvent(boolean status, long id) {
+    RoomDeletionEvent(boolean status, Room room) {
         this.status = status;
-        this.id = id;
+        this.room = room;
     }
 }

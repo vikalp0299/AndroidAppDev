@@ -36,7 +36,7 @@ public class WebSocketService extends Application {
     public static final String CREATED_ROOM = "created_room";
     public static final String DELETED_ROOM = "deleted_room";
     public static final String DELETE_ROOM = "delete_room";
-    public static final String EDITED_ROOM = "edited_rpoom";
+    public static final String EDITED_ROOM = "edited_room";
     public static final String EDIT_ROOM = "edit_room";
 
 
@@ -68,6 +68,8 @@ public class WebSocketService extends Application {
         Database db = dataBaseService.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         webSocketService = this;
+        daoSession.getRoomDao().deleteAll();
+        daoSession.getRoomDao().detachAll();
         try {
             WSSEmitters emitters = new WSSEmitters(daoSession);
             socket =IO.socket(hostUrl);
@@ -102,7 +104,6 @@ public class WebSocketService extends Application {
             @Override
             public void onActivityStarted(@NonNull Activity activity) {
                 currentActivity = activity;
-
             }
 
             @Override

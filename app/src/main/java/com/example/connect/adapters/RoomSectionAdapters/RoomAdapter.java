@@ -3,6 +3,7 @@ package com.example.connect.adapters.RoomSectionAdapters;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,8 @@ public final class RoomAdapter extends Adapter {
     private final Context c;
     private ArrayList<Room> roomList;
     WebSocketService wss = WebSocketService.getWebSocketService();
-    public HashMap<Long,Room> editedRoomsHashMap = new HashMap<>();
-    public HashMap<Long,Room> deletedRoomsHashMap = new HashMap<>();
+    public final HashMap<String,Integer> editedRoomsHashMap = new HashMap<>();
+    public final HashMap<String,Integer> deletedRoomsHashMap = new HashMap<>();
 
     public RoomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -64,6 +65,7 @@ public final class RoomAdapter extends Adapter {
     }
 
     public int getItemCount() {
+        Log.d("get Item count  ", ""+this.roomList.size());
         return this.roomList.size();
     }
 
@@ -71,6 +73,16 @@ public final class RoomAdapter extends Adapter {
         roomList = new ArrayList<>();
         roomList.addAll(roomModels);
         notifyDataSetChanged();
+    }
+
+    public final void removeItemFromList(int position){
+        this.roomList.remove(position);
+    }
+
+    public final void replaceItemFromList(int postion,Room room){
+        this.roomList.remove(postion);
+        roomList.add(postion,room);
+
     }
 
     public final ArrayList<Room> getRoomList() {
@@ -102,7 +114,7 @@ public final class RoomAdapter extends Adapter {
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             Object obj = RoomAdapter.this.getRoomList().get(this.getAdapterPosition());
-            final Room position = (Room)obj;
+            final Room selectedRoom = (Room)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
             popupMenus.inflate(R.menu.show_menu);
@@ -113,23 +125,23 @@ public final class RoomAdapter extends Adapter {
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
                         final EditText roomName = v1.findViewById(R.id.roomName);
                         final EditText roomDetail = v1.findViewById(R.id.roomDetails);
+                        roomName.setText(selectedRoom.getName());
+                        roomDetail.setText(selectedRoom.getDescription());
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
-                            Room pos = position;
-                            EditText editText = roomName;
-                            String names = editText.getText().toString();
-                            editText = roomDetail;
-                            String details = editText.getText().toString();
-                            if(names.equals("") || details.equals("")){
+                            String name = roomName.getText().toString();
+                            String details = roomDetail.getText().toString();
+                            if(name.equals("") || details.equals("")){
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                editedRoomsHashMap.put(pos.getId(),pos);
+                                editedRoomsHashMap.put(selectedRoom.getRid(),this.getAdapterPosition());
                                 JSONObject json = new JSONObject();
                                 try {
-                                    json.put("name",pos.getName());
-                                    json.put("description", pos.getDescription());
-                                    json.put("id",pos.getId());
-                                    json.put("rid",pos.getRid());
+                                    json.put("name",name);
+                                    json.put("description", details);
+                                    json.put("id",selectedRoom.getId());
+                                    json.put("rid",selectedRoom.getRid());
+                                    json.put("createdBy",selectedRoom.getCreatedByUser());
                                     wss.fireDataToServer(WebSocketService.EDIT_ROOM,json);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -141,11 +153,14 @@ public final class RoomAdapter extends Adapter {
                         break;
                     case R.id.delete:
                         (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Room").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            deletedRoomsHashMap.put(position.getId(),position);
+                            deletedRoomsHashMap.put(selectedRoom.getRid(),this.getAdapterPosition());
+                            Log.d("Positon for "+selectedRoom.getRid(),""+this.getAdapterPosition());
                             JSONObject json = new JSONObject();
                             try {
-                                json.put("id",position.getId());
-                                json.put("rid",position.getRid());
+                                json.put("id",selectedRoom.getId());
+                                json.put("rid",selectedRoom.getRid());
+                                json.put("name",selectedRoom.getName());
+                                json.put("description", selectedRoom.getDescription());
                                 wss.fireDataToServer(WebSocketService.DELETE_ROOM,json);
                             } catch (JSONException e) {
                                 e.printStackTrace();

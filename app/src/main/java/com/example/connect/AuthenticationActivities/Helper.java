@@ -1,5 +1,6 @@
 package com.example.connect.AuthenticationActivities;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,7 @@ public class Helper<password> {
     }
 
     public static long getUniqueLongID(){
-        return (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
+        return UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     }
 
 }

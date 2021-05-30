@@ -2,6 +2,7 @@ package com.example.connect.fragments.BottomNavigationFragments;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,7 +97,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         loadDaoData();
         FloatingActionButton floatingActionButton = view.findViewById(R.id.addingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.mRecycler);
-        adapter = new RoomAdapter(getContext(), rooms);
+        this.adapter = new RoomAdapter(getContext(), rooms);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         floatingActionButton.setOnClickListener(it -> RoomFragment.this.addInfo());
@@ -183,11 +184,13 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDelete(RoomDeletionEvent event){
         if (event.status){
-            if (adapter.deletedRoomsHashMap.containsKey(event.id)){
-                Room room = RoomFragment.access$getRoomAdapter$p(RoomFragment.this).deletedRoomsHashMap.get(event.id);
-                RoomFragment.access$getRoomList$p(RoomFragment.this).remove(room);
+            Toast.makeText(getContext(), "Deleted ,"+this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid()), Toast.LENGTH_SHORT).show();
+            if (this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid())){
+                int position = this.adapter.deletedRoomsHashMap.get(event.room.getRid());
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).removeItemFromList(position);
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
-                Toast.makeText(getContext(), "Deleted the "+room.getName(), Toast.LENGTH_SHORT).show();
+//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRemoved(position);
+//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRangeChanged(position,this.adapter.getItemCount()-position);
             }
         }
     }
@@ -196,13 +199,12 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEditComplete(RoomEditedEvent event){
         if (event.status){
-            if ( RoomFragment.access$getRoomAdapter$p(RoomFragment.this).editedRoomsHashMap.containsKey(event.room.getId())){
-                Room room = RoomFragment.access$getRoomAdapter$p(RoomFragment.this).editedRoomsHashMap.get(event.room.getId());
-                room.setName(event.room.getName());
-                room.setDescription(event.room.getDescription());
+            if ( RoomFragment.access$getRoomAdapter$p(RoomFragment.this).editedRoomsHashMap.containsKey(event.room.getRid())){
+                int position = this.adapter.editedRoomsHashMap.get(event.room.getRid());
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).replaceItemFromList(position,event.room);
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemChanged(position);
+                Toast.makeText(getContext(), "Room Information is Edited", Toast.LENGTH_SHORT).show();
             }
-            RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
-            Toast.makeText(getContext(), "Room Information is Edited", Toast.LENGTH_SHORT).show();
         }
     }
 
