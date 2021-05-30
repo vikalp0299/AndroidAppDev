@@ -1,5 +1,6 @@
 package com.example.connect.AuthenticationActivities;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,10 @@ public class Helper<password> {
     public static boolean validatePassword(String password) {
         Matcher matcher = VALID_PASSWORD_REGEX.matcher(password);
         return matcher.find();
+    }
+
+    public static long getUniqueLongID(){
+        return UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
     }
 
 }
