@@ -1,8 +1,5 @@
 package com.example.connect.fragments.RoomActivityFragments;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;

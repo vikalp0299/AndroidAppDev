@@ -75,7 +75,6 @@ public final class FileAdapter extends Adapter {
         private TextView name;
         private ImageView image;
         private ImageView mMenus;
-        //private LinearLayout memTile;
         private final View v;
 
         public final TextView getName() {
@@ -96,10 +95,10 @@ public final class FileAdapter extends Adapter {
                 switch(it.getItemId()) {
                     case R.id.editText:
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_file_item, null);
-                        final EditText memName = v1.findViewById(R.id.fileTitle);
+                        final EditText fileName = v1.findViewById(R.id.fileTitle);
                         (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
                             File pos = position;
-                            EditText editText = memName;
+                            EditText editText = fileName;
                             String names = editText.getText().toString();
                             if(names.equals("")){
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();

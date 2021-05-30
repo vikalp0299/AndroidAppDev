@@ -93,9 +93,9 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_files, container, false);
-        addFolders();
-        loadData();
-        Log.d("files",files.toString());
+        //addFolders();
+        //loadData();
+        //Log.d("files",files.toString());
         FloatingActionButton floatingActionButton = view.findViewById(R.id.fileAddingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.fileRecycler);
         adapter = new FileAdapter(getContext(), files);
@@ -105,7 +105,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         return view;
     }
 
-    @Override
+   /* @Override
     public void onDestroy() {
         super.onDestroy();
         Log.e("onDestroy",files.toString());
@@ -146,7 +146,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         super.onDetach();
         Log.e("onDetach",files.toString());
         saveData();
-    }
+    }*/
 
     //search filter code
     @Override
@@ -217,7 +217,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
 
                 FilesFragment.access$getFileList$p(FilesFragment.this).add(new File(names,R.mipmap.file_image_round));
                 FilesFragment.access$getFileAdapter$p(FilesFragment.this).notifyDataSetChanged();
-                saveData();
+                //saveData();
                 Toast.makeText(getContext(), "Added File Successfully", Toast.LENGTH_SHORT).show();
             }
             dialog.dismiss();
@@ -238,8 +238,8 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         return $this.adapter;
     }
 
-    //saves data i.e, saves created rooms and any updates to it
-    private void saveData(){
+    //saves data i.e, saves added files and any updates to it
+    /*private void saveData(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
@@ -270,6 +270,6 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
     private void addFolders(){
         files.add(new File("Class Materials",R.mipmap.folder_image_round));
         files.add(new File("Old Question Papers",R.mipmap.folder_image_round));
-    }
+    }*/
 
 }
