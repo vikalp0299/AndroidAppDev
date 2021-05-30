@@ -1,7 +1,6 @@
 package com.example.connect.fragments.BottomNavigationFragments;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,13 +27,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.connect.adapters.RoomSectionAdapters.RoomAdapter;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -182,8 +178,8 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    RoomFragment.access$getTeamList$p(RoomFragment.this).add(event.room);
-                    RoomFragment.access$getTeamAdapter$p(RoomFragment.this).notifyDataSetChanged();
+                    RoomFragment.access$getRoomList$p(RoomFragment.this).add(event.room);
+                    RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
                     Toast.makeText(getContext(), "Added Room Successfully", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -228,11 +224,11 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         addDialog.show();
     }
 
-    public static ArrayList<Room> access$getTeamList$p(RoomFragment $this) {
+    public static ArrayList<Room> access$getRoomList$p(RoomFragment $this) {
         return $this.rooms;
     }
 
-    public static RoomAdapter access$getTeamAdapter$p(RoomFragment $this) {
+    public static RoomAdapter access$getRoomAdapter$p(RoomFragment $this) {
         return $this.adapter;
     }
 
@@ -254,6 +250,15 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         List<com.example.connect.Entities.Room> roomList = daoSession.getRoomDao().queryBuilder().list();
         for(Room room : roomList){
             rooms.add(room);
+        }
+        rooms.sort(new RoomNameSorter());
+    }
+
+    class RoomNameSorter implements Comparator<Room> {
+
+        @Override
+        public int compare(Room o1, Room o2) {
+            return o1.getName().compareToIgnoreCase(o2.getName());
         }
     }
 
