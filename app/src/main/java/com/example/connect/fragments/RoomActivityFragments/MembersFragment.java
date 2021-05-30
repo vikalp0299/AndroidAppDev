@@ -87,7 +87,6 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         setHasOptionsMenu(true);
-        //new DownloadImageFromInternet((ImageView) getActivity().findViewById(R.id.memImage)).execute("https://pbs.twimg.com/profile_images/630285593268752384/iD1MkFQ0.png");
     }
 
     @Override
@@ -195,29 +194,4 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
     public static MemberAdapter access$getMemberAdapter$p(MembersFragment $this) {
         return $this.adapter;
     }
-
-
-
-/*    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageView;
-        public DownloadImageFromInternet(ImageView imageView) {
-            this.imageView=imageView;
-            Toast.makeText(getContext(), "Please wait, it may take a few minute...",Toast.LENGTH_SHORT).show();
-        }
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL=urls[0];
-            Bitmap bimage=null;
-            try {
-                InputStream in=new java.net.URL(imageURL).openStream();
-                bimage= BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
-            }
-            return bimage;
-        }
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
-    }*/
 }
