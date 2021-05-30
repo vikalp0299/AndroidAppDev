@@ -24,8 +24,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 public class WebSocketService extends Application {
-    public static final String DELETED_ROOM = "deleted_room";
-    public static final String DELETE_ROOM = "delete_room";
     public static final String REGISTER_USER = "register_user";
     public static final String IS_VERIFIED = "is_verified";
     public static final String CHECK_UNIQUE_EMAIL = "check_email_unique";
@@ -36,6 +34,11 @@ public class WebSocketService extends Application {
     public static final String LOGIN_RESULT = "login_result";
     public static final String CREATE_ROOM = "create_room";
     public static final String CREATED_ROOM = "created_room";
+    public static final String DELETED_ROOM = "deleted_room";
+    public static final String DELETE_ROOM = "delete_room";
+    public static final String EDITED_ROOM = "edited_rpoom";
+    public static final String EDIT_ROOM = "edit_room";
+
 
     private static final String hostUrl = "https://56b6b7c6deba.ngrok.io";
     private Socket socket;
@@ -52,13 +55,19 @@ public class WebSocketService extends Application {
         return authUser;
     }
 
+    public static WebSocketService webSocketService;
+
+    public static WebSocketService getWebSocketService() {
+        return webSocketService;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         DataBaseService dataBaseService = new DataBaseService(this,"app_db");
         Database db = dataBaseService.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
-
+        webSocketService = this;
         try {
             WSSEmitters emitters = new WSSEmitters(daoSession);
             socket =IO.socket(hostUrl);
@@ -67,6 +76,8 @@ public class WebSocketService extends Application {
             socket.on(AUTH_TOKEN,emitters.onAuthToken);
             socket.on(LOGIN_RESULT,emitters.onLogin);
             socket.on(CREATED_ROOM,emitters.onCreatedRoom);
+            socket.on(DELETED_ROOM,emitters.onDeletedRoom);
+            socket.on(EDITED_ROOM,emitters.onEditedRoom);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();

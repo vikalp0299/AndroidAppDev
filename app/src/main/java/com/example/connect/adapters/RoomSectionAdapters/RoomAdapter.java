@@ -17,19 +17,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.connect.AuthenticationActivities.RoomDeletionEvent;
+import com.example.connect.AuthenticationActivities.RoomEditedEvent;
+import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.Room;
 import com.example.connect.RoomActivity;
 import com.example.connect.R;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public final class RoomAdapter extends Adapter {
 
     private final Context c;
     private ArrayList<Room> roomList;
+    WebSocketService wss = WebSocketService.getWebSocketService();
+    public HashMap<Long,Room> editedRoomsHashMap = new HashMap<>();
+    public HashMap<Long,Room> deletedRoomsHashMap = new HashMap<>();
 
     public RoomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -44,6 +57,7 @@ public final class RoomAdapter extends Adapter {
         holder.getTitle().setText(newList.getName());
         holder.getDesc().setText(newList.getDescription());
     }
+
 
     public void onBindViewHolder(@NonNull ViewHolder vh, int i) {
         this.onBindViewHolder((RoomViewHolder)vh, i);
@@ -68,6 +82,8 @@ public final class RoomAdapter extends Adapter {
         this.c = c;
         this.roomList = roomList;
     }
+
+
 
     public final class RoomViewHolder extends ViewHolder {
 
@@ -107,10 +123,17 @@ public final class RoomAdapter extends Adapter {
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                pos.setName(names);
-                                pos.setDescription(details);
-                                RoomAdapter.this.notifyDataSetChanged();
-                                Toast.makeText(getV().getContext(), "Room Information is Edited", Toast.LENGTH_SHORT).show();
+                                editedRoomsHashMap.put(pos.getId(),pos);
+                                JSONObject json = new JSONObject();
+                                try {
+                                    json.put("name",pos.getName());
+                                    json.put("description", pos.getDescription());
+                                    json.put("id",pos.getId());
+                                    json.put("rid",pos.getRid());
+                                    wss.fireDataToServer(WebSocketService.EDIT_ROOM,json);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             dialog.dismiss();
                         }).setNegativeButton("Cancel", null).create().show();
@@ -118,9 +141,15 @@ public final class RoomAdapter extends Adapter {
                         break;
                     case R.id.delete:
                         (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Room").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            RoomAdapter.this.getRoomList().remove(RoomViewHolder.this.getAdapterPosition());
-                            RoomAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Deleted this Room", Toast.LENGTH_SHORT).show();
+                            deletedRoomsHashMap.put(position.getId(),position);
+                            JSONObject json = new JSONObject();
+                            try {
+                                json.put("id",position.getId());
+                                json.put("rid",position.getRid());
+                                wss.fireDataToServer(WebSocketService.DELETE_ROOM,json);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             dialog.dismiss();
                         }).setNegativeButton("No", null).create().show();
                         bool = true;
@@ -128,7 +157,6 @@ public final class RoomAdapter extends Adapter {
                     default:
                         bool = true;
                 }
-
                 return bool;
             });
             popupMenus.show();

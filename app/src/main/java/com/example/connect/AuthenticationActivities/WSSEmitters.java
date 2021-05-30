@@ -7,6 +7,7 @@ import com.example.connect.Entities.DaoSession;
 import com.example.connect.Entities.Room;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.greendao.database.Database;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -175,31 +176,49 @@ public class WSSEmitters {
             JSONObject json = (JSONObject) args[0];
             try {
                 boolean status = json.getBoolean("status");
-
                 if(status){
-                    JSONObject response = json.getJSONObject("response");
-                    String rid = response.getString("rid");
-                    String name = response.getString("name");
-                    String description = response.getString("description");
-                    String createdBy = response.getString("createdBy");
-
-                    EventBus.getDefault().post(new RoomCreationEvent(status));
-
+                    long id = json.getLong("id");
+                    daoSession.getRoomDao().deleteByKey(id);
+                    EventBus.getDefault().post(new RoomDeletionEvent(true,id));
                     return;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            EventBus.getDefault().post(new RoomCreationEvent(false));
+            EventBus.getDefault().post(new RoomDeletionEvent(false));
+        }
+    };
+
+    public Emitter.Listener onEditedRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                boolean status = json.getBoolean("status");
+                if(status){
+                    JSONObject data = json.getJSONObject("response");
+                    String name = data.getString("rid");
+                    String description = data.getString("description");
+                    long id = data.getLong("id");
+                    Room room = daoSession.getRoomDao().load(id);
+                    room.setName(name);
+                    room.setDescription(description);
+                    daoSession.getRoomDao().update(room);
+                    EventBus.getDefault().post(new RoomEditedEvent(true));
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new RoomEditedEvent(false));
         }
     };
 
 
-}
 
-class RoomDeletionEvent{
 
 }
+
 
 class LoginEvent{
     int status;

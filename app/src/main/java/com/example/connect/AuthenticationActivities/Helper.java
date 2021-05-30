@@ -19,4 +19,8 @@ public class Helper<password> {
         return matcher.find();
     }
 
+    public static long getUniqueLongID(){
+        return (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
+    }
+
 }

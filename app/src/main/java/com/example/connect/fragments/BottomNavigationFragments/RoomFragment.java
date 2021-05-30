@@ -13,6 +13,8 @@ import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.connect.AuthenticationActivities.RoomCreationEvent;
+import com.example.connect.AuthenticationActivities.RoomDeletionEvent;
+import com.example.connect.AuthenticationActivities.RoomEditedEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.DaoSession;
 import com.example.connect.Entities.Room;
@@ -62,6 +64,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     public RoomFragment() {
         // Required empty public constructor
     }
+
 
 
 
@@ -172,6 +175,37 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDelete(RoomDeletionEvent event){
+        if (event.status){
+            if (adapter.deletedRoomsHashMap.containsKey(event.id)){
+                Room room = RoomFragment.access$getRoomAdapter$p(RoomFragment.this).deletedRoomsHashMap.get(event.id);
+                RoomFragment.access$getRoomList$p(RoomFragment.this).remove(room);
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
+                Toast.makeText(getContext(), "Deleted the "+room.getName(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEditComplete(RoomEditedEvent event){
+        if (event.status){
+            if ( RoomFragment.access$getRoomAdapter$p(RoomFragment.this).editedRoomsHashMap.containsKey(event.room.getId())){
+                Room room = RoomFragment.access$getRoomAdapter$p(RoomFragment.this).editedRoomsHashMap.get(event.room.getId());
+                room.setName(event.room.getName());
+                room.setDescription(event.room.getDescription());
+            }
+            RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
+            Toast.makeText(getContext(), "Room Information is Edited", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnRoomAdded(RoomCreationEvent event){
         if(event.status){
@@ -247,11 +281,12 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     private void loadDaoData(){
         rooms.clear();
         DaoSession daoSession = webSocketService.getDaoSession();
-        List<com.example.connect.Entities.Room> roomList = daoSession.getRoomDao().queryBuilder().list();
+        List<com.example.connect.Entities.Room> roomList = daoSession.getRoomDao().loadAll();
+        System.out.println(roomList.size());
         for(Room room : roomList){
             rooms.add(room);
         }
-        rooms.sort(new RoomNameSorter());
+
     }
 
     class RoomNameSorter implements Comparator<Room> {
