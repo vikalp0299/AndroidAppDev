@@ -83,7 +83,7 @@ public final class FileAdapter extends Adapter {
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             Object obj = FileAdapter.this.getFileList().get(this.getAdapterPosition());
-            final File position = (File)obj;
+            final File selectedFile = (File)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
             popupMenus.inflate(R.menu.edit_delete_room_menu);
@@ -91,17 +91,16 @@ public final class FileAdapter extends Adapter {
                 boolean bool;
                 switch(it.getItemId()) {
                     case R.id.editText:
-                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_file_item, null);
-                        final EditText fileName = v1.findViewById(R.id.fileTitle);
-                        (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
-                            File pos = position;
-                            EditText editText = fileName;
-                            String names = editText.getText().toString();
-                            if(names.equals("")){
+                        View view = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_file_item, null);
+                        final EditText fileName = view.findViewById(R.id.fileTitle);
+                        fileName.setText(selectedFile.getFileName());
+                        (new Builder(getV().getContext())).setView(view).setPositiveButton("Ok", (dialog, $noName_1) -> {
+                            String name = fileName.getText().toString();
+                            if(name.equals("")){
                                 Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                pos.setFileName(names);
+                                selectedFile.setFileName(name);
                                 FileAdapter.this.notifyDataSetChanged();
                                 Toast.makeText(getV().getContext(), "File Information is Edited", Toast.LENGTH_SHORT).show();
                             }
@@ -110,10 +109,11 @@ public final class FileAdapter extends Adapter {
                         bool = true;
                         break;
                     case R.id.delete:
-                        (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this File").setPositiveButton("Yes", (dialog, $noName_1) -> {
+                        String name = selectedFile.getFileName();
+                        (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure to delete "+name).setPositiveButton("Yes", (dialog, $noName_1) -> {
                             FileAdapter.this.getFileList().remove(FileViewHolder.this.getAdapterPosition());
                             FileAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Deleted this File", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getV().getContext(), "Deleted "+name, Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }).setNegativeButton("No", null).create().show();
                         bool = true;

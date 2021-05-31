@@ -117,12 +117,12 @@ public final class RoomAdapter extends Adapter {
                 boolean bool;
                 switch(it.getItemId()) {
                     case R.id.editText:
-                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
-                        final EditText roomName = v1.findViewById(R.id.roomName);
-                        final EditText roomDetail = v1.findViewById(R.id.roomDetails);
+                        View view = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_room_item, null);
+                        final EditText roomName = view.findViewById(R.id.roomName);
+                        final EditText roomDetail = view.findViewById(R.id.roomDetails);
                         roomName.setText(selectedRoom.getName());
                         roomDetail.setText(selectedRoom.getDescription());
-                        (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
+                        (new Builder(getV().getContext())).setView(view).setPositiveButton("Ok", (dialog, $noName_1) -> {
                             String name = roomName.getText().toString();
                             String details = roomDetail.getText().toString();
                             if(name.equals("") || details.equals("")){
