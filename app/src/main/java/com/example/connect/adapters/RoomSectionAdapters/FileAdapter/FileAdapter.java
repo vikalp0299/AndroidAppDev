@@ -2,13 +2,11 @@ package com.example.connect.adapters.RoomSectionAdapters.FileAdapter;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.example.connect.model.File;
 import com.example.connect.R;
-import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -89,7 +86,7 @@ public final class FileAdapter extends Adapter {
             final File position = (File)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
-            popupMenus.inflate(R.menu.show_menu);
+            popupMenus.inflate(R.menu.edit_delete_room_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
                 boolean bool;
                 switch(it.getItemId()) {
