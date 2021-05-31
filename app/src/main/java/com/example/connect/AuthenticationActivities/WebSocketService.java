@@ -68,8 +68,6 @@ public class WebSocketService extends Application {
         Database db = dataBaseService.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         webSocketService = this;
-        daoSession.getRoomDao().deleteAll();
-        daoSession.getRoomDao().detachAll();
         try {
             WSSEmitters emitters = new WSSEmitters(daoSession);
             socket =IO.socket(hostUrl);
