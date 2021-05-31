@@ -135,7 +135,6 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
                 return true; // Return true to expand action view
             }
         });
-
     }
 
     @Override
@@ -174,6 +173,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+        webSocketService.getDaoSession().clear();
     }
 
     @Override
@@ -188,9 +188,9 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
             if (this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid())){
                 int position = this.adapter.deletedRoomsHashMap.get(event.room.getRid());
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).removeItemFromList(position);
-                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
-//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRemoved(position);
-//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRangeChanged(position,this.adapter.getItemCount()-position);
+//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRemoved(position);
+                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRangeChanged(position,this.adapter.getItemCount()-position);
             }
         }
     }
@@ -298,5 +298,4 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
             return o1.getName().compareToIgnoreCase(o2.getName());
         }
     }
-
 }
