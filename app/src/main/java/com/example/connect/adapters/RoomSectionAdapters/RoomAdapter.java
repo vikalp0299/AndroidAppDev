@@ -18,16 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.example.connect.AuthenticationActivities.RoomDeletionEvent;
-import com.example.connect.AuthenticationActivities.RoomEditedEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.Room;
 import com.example.connect.RoomActivity;
 import com.example.connect.R;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -117,7 +112,7 @@ public final class RoomAdapter extends Adapter {
             final Room selectedRoom = (Room)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
-            popupMenus.inflate(R.menu.show_menu);
+            popupMenus.inflate(R.menu.edit_delete_room_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
                 boolean bool;
                 switch(it.getItemId()) {

@@ -2,13 +2,11 @@ package com.example.connect.adapters.RoomSectionAdapters.MemberAdapter;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,11 +91,11 @@ public final class MemberAdapter extends Adapter {
             final Member position = (Member)obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
-            popupMenus.inflate(R.menu.show_menu);
+            popupMenus.inflate(R.menu.remove_member_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
-                boolean bool;
-                switch(it.getItemId()) {
-                    case R.id.editText:
+                //boolean bool;
+                /*switch(it.getItemId()) {
+                    /*case R.id.editText:
                         View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_member_item, null);
                         final EditText memName = v1.findViewById(R.id.memberName);
                         final EditText memDetail = v1.findViewById(R.id.memberEmail);
@@ -119,21 +117,21 @@ public final class MemberAdapter extends Adapter {
                             dialog.dismiss();
                         }).setNegativeButton("Cancel", null).create().show();
                         bool = true;
-                        break;
-                    case R.id.delete:
-                        (new Builder(getV().getContext())).setTitle("Delete").setIcon(R.drawable.ic_warning).setMessage("Are you sure delete this Member").setPositiveButton("Yes", (dialog, $noName_1) -> {
+                        break;*/
+                    //case R.id.remove:
+                        (new Builder(getV().getContext())).setTitle("Remove Member").setIcon(R.drawable.ic_warning).setMessage("Are you sure to remove this Member").setPositiveButton("Yes", (dialog, $noName_1) -> {
                             MemberAdapter.this.getMemberList().remove(MemberViewHolder.this.getAdapterPosition());
                             MemberAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Deleted this Member", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getV().getContext(), "Removed this Member", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         }).setNegativeButton("No", null).create().show();
-                        bool = true;
-                        break;
-                    default:
-                        bool = true;
-                }
+                        //bool = true;
+                        //break;
+//                    default:
+//                        bool = true;
+                //}
 
-                return bool;
+                return true;
             });
             popupMenus.show();
             Field popup = PopupMenu.class.getDeclaredField("mPopup");
