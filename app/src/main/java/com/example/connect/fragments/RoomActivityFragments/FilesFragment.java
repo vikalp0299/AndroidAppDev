@@ -42,7 +42,7 @@ import java.util.Objects;
  * Use the {@link FilesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FilesFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class FilesFragment extends Fragment /*implements SearchView.OnQueryTextListener*/ {
     private ArrayList<File> files = new ArrayList<>();
 
     private FileAdapter adapter;
@@ -96,6 +96,13 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         //addFolders();
         //loadData();
         //Log.d("files",files.toString());
+        addFolder("Class Materials");
+        addFolder("Lab Materials");
+        addFolder("Old Question Papers");
+        addFile("Course Plan.pdf");
+        addFile("Textbook.pdf");
+        addFile("Syllabus.pdf");
+        addFile("Important Topics.pdf");
         FloatingActionButton floatingActionButton = view.findViewById(R.id.fileAddingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.fileRecycler);
         adapter = new FileAdapter(getContext(), files);
@@ -116,7 +123,6 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
     public void onDestroyView() {
         super.onDestroyView();
         Log.e("onDestroyView",files.toString());
-       //delFolders();
         saveData();
     }
 
@@ -149,7 +155,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
     }*/
 
     //search filter code
-    @Override
+    /*@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
 
@@ -162,7 +168,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Do something when collapsed
-                adapter.setFilter(files);
+                //adapter.setFilter(files);
                 return true; // Return true to collapse action view
             }
 
@@ -177,8 +183,8 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final ArrayList<File> filteredModelList = filter(files, newText);
-        adapter.setFilter(filteredModelList);
+//        final ArrayList<File> filteredModelList = filter(files, newText);
+//        adapter.setFilter(filteredModelList);
         return true;
     }
 
@@ -199,8 +205,7 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         }
         return filteredModelList;
 
-    }
-
+    }*/
     private void addFileInfo() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View v = inflater.inflate(R.layout.add_file_item, null);
@@ -258,18 +263,13 @@ public class FilesFragment extends Fragment implements SearchView.OnQueryTextLis
         if (files == null) {
             files = new ArrayList<>();
         }
-    }
-
-    private void delFolders(){
-        if(files.size()>2) {
-            files.remove(0);
-            files.remove(1);
-        }
-    }
-
-    private void addFolders(){
-        files.add(new File("Class Materials",R.mipmap.folder_image_round));
-        files.add(new File("Old Question Papers",R.mipmap.folder_image_round));
     }*/
+
+    private void addFolder(String name){
+        files.add(new File(name,R.mipmap.folder_image_round));
+    }
+    private void addFile(String name){
+        files.add(new File(name,R.mipmap.file_image_round));
+    }
 
 }
