@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,11 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.connect.AuthenticationActivities.Events.OpenRoomEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.Room;
 import com.example.connect.RoomActivity;
 import com.example.connect.R;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,10 +51,18 @@ public final class RoomAdapter extends Adapter {
     }
 
     public void onBindViewHolder(RoomViewHolder holder, int position) {
-        Object obj = this.roomList.get(position);
-        Room newList = (Room)obj;
-        holder.getTitle().setText(newList.getName());
-        holder.getDesc().setText(newList.getDescription());
+        Room room = this.roomList.get(position);
+        holder.getTitle().setText(room.getName());
+        holder.getDesc().setText(room.getDescription());
+        holder.getTile().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent;
+                intent =  new Intent(holder.getV().getContext(), RoomActivity.class);
+                holder.getV().getContext().startActivity(intent);
+                EventBus.getDefault().post(new OpenRoomEvent(room));
+            }
+        });
     }
 
 
@@ -134,7 +145,7 @@ public final class RoomAdapter extends Adapter {
                                 try {
                                     json.put("name",name);
                                     json.put("description", details);
-                                    json.put("id",selectedRoom.getId());
+                                    json.put("id",""+selectedRoom.getId());
                                     json.put("rid",selectedRoom.getRid());
                                     json.put("createdBy",selectedRoom.getCreatedByUser());
                                     wss.fireDataToServer(WebSocketService.EDIT_ROOM,json);
@@ -152,7 +163,7 @@ public final class RoomAdapter extends Adapter {
                             Log.d("Positon for "+selectedRoom.getRid(),""+this.getAdapterPosition());
                             JSONObject json = new JSONObject();
                             try {
-                                json.put("id",selectedRoom.getId());
+                                json.put("id",""+selectedRoom.getId());
                                 json.put("rid",selectedRoom.getRid());
                                 json.put("name",selectedRoom.getName());
                                 json.put("description", selectedRoom.getDescription());
@@ -182,6 +193,8 @@ public final class RoomAdapter extends Adapter {
             return this.v;
         }
 
+        public final View getTile() {return this.tile;}
+
         public RoomViewHolder(View v) {
             super(v);
             this.v = v;
@@ -207,13 +220,9 @@ public final class RoomAdapter extends Adapter {
                     e.printStackTrace();
                 }
             });
-            this.tile.setOnClickListener(it -> onItemClick());
         }
 
-        public void onItemClick(){
-            final Intent intent;
-            intent =  new Intent(getV().getContext(), RoomActivity.class);
-            getV().getContext().startActivity(intent);
-        }
     }
 }
+
+

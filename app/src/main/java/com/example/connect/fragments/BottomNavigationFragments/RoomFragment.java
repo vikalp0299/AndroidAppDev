@@ -2,7 +2,6 @@ package com.example.connect.fragments.BottomNavigationFragments;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,9 +12,9 @@ import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
-import com.example.connect.AuthenticationActivities.RoomCreationEvent;
-import com.example.connect.AuthenticationActivities.RoomDeletionEvent;
-import com.example.connect.AuthenticationActivities.RoomEditedEvent;
+import com.example.connect.AuthenticationActivities.Events.RoomCreationEvent;
+import com.example.connect.AuthenticationActivities.Events.RoomDeletionEvent;
+import com.example.connect.AuthenticationActivities.Events.RoomEditedEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.DaoSession;
 import com.example.connect.Entities.Room;
@@ -166,6 +165,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     @Override
     public void onStart() {
         super.onStart();
+        webSocketService.setRoom(null);
         EventBus.getDefault().register(this);
     }
 
@@ -173,7 +173,6 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-        webSocketService.getDaoSession().clear();
     }
 
     @Override
@@ -188,7 +187,6 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
             if (this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid())){
                 int position = this.adapter.deletedRoomsHashMap.get(event.room.getRid());
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).removeItemFromList(position);
-//                RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyDataSetChanged();
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRemoved(position);
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).notifyItemRangeChanged(position,this.adapter.getItemCount()-position);
             }
@@ -268,22 +266,11 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         return $this.adapter;
     }
 
-    //saves data i.e, saves created rooms and any updates to it
-    /*private void saveData(){
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("shared preferences", getContext().MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(rooms);
-        editor.putString("task list", json);
-        editor.apply();
-    }*/
-
 
     //loading data using daoSession
     private void loadDaoData(){
         rooms.clear();
-        DaoSession daoSession = webSocketService.getDaoSession();
-        List<com.example.connect.Entities.Room> roomList = daoSession.getRoomDao().loadAll();
+        List<com.example.connect.Entities.Room> roomList = webSocketService.getDaoSession().getRoomDao().queryBuilder().listLazyUncached();
         System.out.println(roomList.size());
         for(Room room : roomList){
             rooms.add(room);

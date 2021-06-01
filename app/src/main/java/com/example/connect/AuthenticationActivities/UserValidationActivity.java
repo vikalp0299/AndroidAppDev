@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.connect.AuthenticationActivities.Events.VerificationEvent;
 import com.example.connect.MainActivity;
 import com.example.connect.R;
 

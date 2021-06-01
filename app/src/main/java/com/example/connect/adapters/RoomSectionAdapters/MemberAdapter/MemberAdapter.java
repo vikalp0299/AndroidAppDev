@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -15,7 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.example.connect.model.Member;
+import com.example.connect.Entities.RoomMember;
+
 import com.example.connect.R;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public final class MemberAdapter extends Adapter {
 
     private final Context c;
-    private ArrayList<Member> memberList;
+    private ArrayList<RoomMember> memberList;
 
     public MemberViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -41,10 +41,9 @@ public final class MemberAdapter extends Adapter {
     }
 
     public void onBindViewHolder(MemberViewHolder holder, int position) {
-        Object obj = this.memberList.get(position);
-        Member newList = (Member)obj;
-        holder.getName().setText(newList.getMemberName());
-        holder.getEmail().setText(newList.getMemberEmail());
+        RoomMember member = this.memberList.get(position);
+        holder.getName().setText(member.getName());
+        holder.getEmail().setText(member.getEmail());
     }
 
     public void onBindViewHolder(@NonNull ViewHolder vh, int i) {
@@ -55,17 +54,17 @@ public final class MemberAdapter extends Adapter {
         return this.memberList.size();
     }
 
-    public void setFilter(ArrayList<Member> memberModels){
-        memberList = new ArrayList<>();
+    public void setFilter(ArrayList<RoomMember> memberModels){
+        memberList = new ArrayList<RoomMember>();
         memberList.addAll(memberModels);
         notifyDataSetChanged();
     }
 
-    public final ArrayList<Member> getMemberList() {
+    public final ArrayList<RoomMember> getMemberList() {
         return this.memberList;
     }
 
-    public MemberAdapter(Context c, ArrayList<Member> memList) {
+    public MemberAdapter(Context c, ArrayList<RoomMember> memList) {
         super();
         this.c = c;
         this.memberList = memList;
@@ -88,49 +87,17 @@ public final class MemberAdapter extends Adapter {
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             Object obj = MemberAdapter.this.getMemberList().get(this.getAdapterPosition());
-            final Member position = (Member)obj;
+            final RoomMember position = (RoomMember) obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
             popupMenus.inflate(R.menu.remove_member_menu);
             popupMenus.setOnMenuItemClickListener(it -> {
-                //boolean bool;
-                /*switch(it.getItemId()) {
-                    /*case R.id.editText:
-                        View v1 = LayoutInflater.from(getV().getContext()).inflate(R.layout.add_member_item, null);
-                        final EditText memName = v1.findViewById(R.id.memberName);
-                        final EditText memDetail = v1.findViewById(R.id.memberEmail);
-                        (new Builder(getV().getContext())).setView(v1).setPositiveButton("Ok", (dialog, $noName_1) -> {
-                            Member pos = position;
-                            EditText editText = memName;
-                            String names = editText.getText().toString();
-                            editText = memDetail;
-                            String emails = editText.getText().toString();
-                            if(names.equals("") || emails.equals("")){
-                                Toast.makeText(getV().getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                pos.setMemberName(names);
-                                pos.setMemberEmail(emails);
-                                MemberAdapter.this.notifyDataSetChanged();
-                                Toast.makeText(getV().getContext(), "Member Information is Edited", Toast.LENGTH_SHORT).show();
-                            }
-                            dialog.dismiss();
-                        }).setNegativeButton("Cancel", null).create().show();
-                        bool = true;
-                        break;*/
-                    //case R.id.remove:
-                        (new Builder(getV().getContext())).setTitle("Remove Member").setIcon(R.drawable.ic_warning).setMessage("Are you sure to remove this Member").setPositiveButton("Yes", (dialog, $noName_1) -> {
-                            MemberAdapter.this.getMemberList().remove(MemberViewHolder.this.getAdapterPosition());
-                            MemberAdapter.this.notifyDataSetChanged();
-                            Toast.makeText(getV().getContext(), "Removed this Member", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        }).setNegativeButton("No", null).create().show();
-                        //bool = true;
-                        //break;
-//                    default:
-//                        bool = true;
-                //}
-
+            (new Builder(getV().getContext())).setTitle("Remove Member").setIcon(R.drawable.ic_warning).setMessage("Are you sure to remove this Member").setPositiveButton("Yes", (dialog, $noName_1) -> {
+                MemberAdapter.this.getMemberList().remove(MemberViewHolder.this.getAdapterPosition());
+                MemberAdapter.this.notifyDataSetChanged();
+                Toast.makeText(getV().getContext(), "Removed this Member", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }).setNegativeButton("No", null).create().show();
                 return true;
             });
             popupMenus.show();

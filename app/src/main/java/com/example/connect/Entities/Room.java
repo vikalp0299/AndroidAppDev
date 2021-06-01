@@ -16,7 +16,7 @@ import java.util.List;
 @Entity(active = true,generateGettersSetters = true,generateConstructors = true)
 public class Room {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @Index(unique = true)
     public String rid;
@@ -42,8 +42,8 @@ public class Room {
     @Generated(hash = 740313876)
     private transient RoomDao myDao;
 
-    @Generated(hash = 1144035398)
-    public Room(long id, String rid, @NotNull String name, String description,
+    @Generated(hash = 645749057)
+    public Room(Long id, String rid, @NotNull String name, String description,
             @NotNull String createdByUser) {
         this.id = id;
         this.rid = rid;
@@ -56,12 +56,8 @@ public class Room {
     public Room() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -158,6 +154,10 @@ public class Room {
 
     public void setCreatedByUser(String createdByUser) {
         this.createdByUser = createdByUser;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /** called by internal mechanisms, do not call yourself. */

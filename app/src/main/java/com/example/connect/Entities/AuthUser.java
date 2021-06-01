@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.NotNull;
 )
 public class AuthUser {
     @Id
-    public long id;
+    public Long id;
     @Index(unique = true)
     public String uid;
     @NotNull
@@ -34,10 +34,10 @@ private transient DaoSession daoSession;
 /** Used for active entity operations. */
 @Generated(hash = 621821637)
 private transient AuthUserDao myDao;
-@Generated(hash = 171331386)
-public AuthUser(long id, String uid, @NotNull String firstName,
-                @NotNull String lastName, String email, String pictureUrl,
-                @NotNull Boolean verified, String token, long timeStamp) {
+@Generated(hash = 1859820757)
+public AuthUser(Long id, String uid, @NotNull String firstName,
+        @NotNull String lastName, String email, String pictureUrl,
+        @NotNull Boolean verified, String token, long timeStamp) {
     this.id = id;
     this.uid = uid;
     this.firstName = firstName;
@@ -51,7 +51,7 @@ public AuthUser(long id, String uid, @NotNull String firstName,
 @Generated(hash = 1740224645)
 public AuthUser() {
 }
-public long getId() {
+public Long getId() {
     return this.id;
 }
 public void setId(long id) {
@@ -137,6 +137,9 @@ public void update() {
         throw new DaoException("Entity is detached from DAO context");
     }
     myDao.update(this);
+}
+public void setId(Long id) {
+    this.id = id;
 }
 /** called by internal mechanisms, do not call yourself. */
 @Generated(hash = 1635841394)

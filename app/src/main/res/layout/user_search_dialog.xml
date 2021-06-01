@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/bottom_sheet"
+    android:layout_height="match_parent"
+    android:gravity="top">
+    <RelativeLayout
+        android:layout_margin="15dp"
+        android:id="@+id/title_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="1dp"
+            android:textSize="15dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:text="Add Members" />
+
+        <Button
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textAllCaps="false"
+            android:text="Done"
+            android:id="@+id/search_user_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <EditText
+        android:padding="10dp"
+        android:paddingHorizontal="10dp"
+        android:lines="1"
+        android:id="@+id/user_search_field"
+        android:layout_margin="15dp"
+        android:layout_below="@+id/title_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_search"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:autofillHints=""
+        android:background="@drawable/search_background">
+    </EditText>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginVertical="15dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_below="@id/user_search_field"
+        android:id="@+id/search_user_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
