@@ -5,16 +5,24 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.connect.AuthenticationActivities.Events.OpenRoomEvent;
 import com.example.connect.Entities.AuthUser;
 import com.example.connect.Entities.DaoMaster;
 import com.example.connect.Entities.DaoSession;
+import com.example.connect.Entities.Room;
+import com.example.connect.Entities.RoomDao;
 import com.example.connect.MainActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.greenrobot.greendao.database.Database;
+import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -38,6 +46,14 @@ public class WebSocketService extends Application {
     public static final String DELETE_ROOM = "delete_room";
     public static final String EDITED_ROOM = "edited_room";
     public static final String EDIT_ROOM = "edit_room";
+    public static final String SEARCH_USERS = "search_users";
+    public static final String SEARCHED_USERS = "searched_users";
+    public static final String ADD_MEMBER = "add_member";
+    public static final String ADDED_MEMBER = "added_member";
+    public static final String GET_MEMBERS = "get_members";
+    public static final String GOT_MEMBER = "got_members";
+    public static final String REMOVE_MEMBER = "remove_member";
+    public static final String REMOVED_MEMBER = "remove_member";
 
 
     private static final String hostUrl = "https://56b6b7c6deba.ngrok.io";
@@ -45,6 +61,7 @@ public class WebSocketService extends Application {
     private static Activity currentActivity;
     private DaoSession daoSession;
     private AuthUser authUser;
+    private Room room;
 
     public AuthUser getAuthUser() {
         if (authUser==null){
@@ -64,7 +81,8 @@ public class WebSocketService extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DataBaseService dataBaseService = new DataBaseService(this,"app_db");
+        EventBus.getDefault().register(this);
+        DataBaseService dataBaseService = new DataBaseService(this,"mad_app");
         Database db = dataBaseService.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         webSocketService = this;
@@ -78,6 +96,8 @@ public class WebSocketService extends Application {
             socket.on(CREATED_ROOM,emitters.onCreatedRoom);
             socket.on(DELETED_ROOM,emitters.onDeletedRoom);
             socket.on(EDITED_ROOM,emitters.onEditedRoom);
+            socket.on(SEARCHED_USERS,emitters.onSearchedUsers);
+            socket.on(ADDED_MEMBER,emitters.onAddedMember);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -132,10 +152,13 @@ public class WebSocketService extends Application {
         });
     }
 
+
     public boolean hasAuthUser() {
        boolean bool =  daoSession.getAuthUserDao().queryBuilder().list().isEmpty();
        return !bool;
     }
+
+
 
     public boolean isAuthUserVerified(){
        List<AuthUser> list = daoSession.getAuthUserDao().queryBuilder().list();
@@ -150,6 +173,7 @@ public class WebSocketService extends Application {
         super.onTerminate();
         socket.off();
         socket.disconnect();
+        EventBus.getDefault().unregister(this);
     }
 
     public DaoSession getDaoSession() {
@@ -179,6 +203,20 @@ public class WebSocketService extends Application {
         public void onCreate(Database db) {
             super.onCreate(db);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenRoomEvent(OpenRoomEvent event){
+        Log.d("room",event.room.getName());
+        this.room = event.room;
+    }
+
+    public void setRoom(Room room){
+        this.room = room;
+    }
+
+    public Room getRoom(){
+        return this.room;
     }
 }
 

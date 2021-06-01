@@ -6,10 +6,12 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Objects;
+
 @Entity
 public class RoomMember {
     @Id(autoincrement = true)
-    private long id;
+    private Long id;
 
     @Index
     private String mid;
@@ -25,8 +27,8 @@ public class RoomMember {
     @Index
     public String rid;
 
-    @Generated(hash = 1451452823)
-    public RoomMember(long id, String mid, String name, String pictureUrl,
+    @Generated(hash = 1680104556)
+    public RoomMember(Long id, String mid, String name, String pictureUrl,
             String email, String rid) {
         this.id = id;
         this.mid = mid;
@@ -36,11 +38,23 @@ public class RoomMember {
         this.rid = rid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof String)) return false;
+        return getMid().equals(o.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMid());
+    }
+
     @Generated(hash = 538897564)
     public RoomMember() {
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
@@ -86,5 +100,9 @@ public class RoomMember {
 
     public void setRid(String rid) {
         this.rid = rid;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

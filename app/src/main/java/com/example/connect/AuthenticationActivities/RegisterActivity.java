@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.connect.AuthenticationActivities.Events.RegistrationEvent;
+import com.example.connect.AuthenticationActivities.Events.UniqueEmailEvent;
 import com.example.connect.R;
 
 import org.greenrobot.eventbus.EventBus;

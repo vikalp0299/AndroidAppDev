@@ -1,90 +1,101 @@
 package com.example.connect.fragments.RoomActivityFragments;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.connect.AuthenticationActivities.Events.AddedMemberEvent;
+import com.example.connect.AuthenticationActivities.Events.OpenRoomEvent;
+import com.example.connect.AuthenticationActivities.Events.SearchUsersEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
-import com.example.connect.model.Member;
+import com.example.connect.Entities.RoomMember;
 import com.example.connect.R;
 import com.example.connect.adapters.RoomSectionAdapters.MemberAdapter.MemberAdapter;
-import com.example.connect.fragments.BottomNavigationFragments.RoomFragment;
 
+import com.example.connect.adapters.RoomSectionAdapters.SearchUserAdapter;
+import com.example.connect.model.SearchUser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MembersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MembersFragment extends Fragment implements SearchView.OnQueryTextListener{
-    private ArrayList<Member> members = new ArrayList<>();
-    private MemberAdapter adapter;
+    public ArrayList<RoomMember> members = new ArrayList<RoomMember>();
+    public MemberAdapter adapter;
+    private Dialog dialog;
+    WebSocketService wss = WebSocketService.getWebSocketService();
+    RecyclerView searchRecyclerView;
+    private SearchUserAdapter searchUserAdapter;
+    private ArrayList<SearchUser> searchUsers = new ArrayList<>();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public MembersFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MembersFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MembersFragment newInstance(String param1, String param2) {
-        MembersFragment fragment = new MembersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         setHasOptionsMenu(true);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSearchTextResultsReceived(SearchUsersEvent event){
+        if (event.status){
+            searchUserAdapter.updateList(event.searchUsers);
+        }else{
+            searchUserAdapter.updateList(new ArrayList<SearchUser>());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMemberAdded(AddedMemberEvent event){
+        if (event.status){
+            searchUserAdapter.updateListItem(event.sid);
+        }else {
+            Toast.makeText(getContext(),"Failed to add member",Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,6 +109,57 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
         recyclerView.setAdapter(adapter);
         floatingActionButton.setOnClickListener(it -> MembersFragment.this.addMemberInfo());
 
+        dialog = new Dialog(getContext());
+        View dialogView = inflater.inflate(R.layout.user_search_dialog,container,false);
+        EditText searchText = dialogView.findViewById(R.id.user_search_field);
+        searchRecyclerView = dialogView.findViewById(R.id.search_user_recycler);
+        searchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        searchUserAdapter = new SearchUserAdapter(searchUsers,this);
+        ViewGroup.LayoutParams params = searchRecyclerView.getLayoutParams();
+        params.height = (getActivity().getResources().getDisplayMetrics().heightPixels*3)/5;
+        searchRecyclerView.setLayoutParams(params);
+        searchRecyclerView.setAdapter(searchUserAdapter);
+        Button button = dialogView.findViewById(R.id.search_user_done);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().isEmpty()) {
+                    searchUsers.clear();
+                    searchUserAdapter.notifyDataSetChanged();
+                    return;
+                }
+                Log.d("Search text",searchText.getText().toString());
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("searchText",s.toString());
+                    wss.fireDataToServer(WebSocketService.SEARCH_USERS,json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setWindowAnimations(R.style.BottomSheetStyle);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
         return view;
     }
 
@@ -130,7 +192,7 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        final ArrayList<Member> filteredModelList = filter(members, newText);
+        final ArrayList<RoomMember> filteredModelList = filter(members, newText);
         adapter.setFilter(filteredModelList);
         return true;
     }
@@ -140,12 +202,12 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
         return false;
     }
 
-    private ArrayList<Member> filter(ArrayList<Member> models, String query) {
+    private ArrayList<RoomMember> filter(ArrayList<RoomMember> models, String query) {
         query = query.toLowerCase();
 
-        final ArrayList<Member> filteredModelList = new ArrayList<>();
-        for (Member model : models) {
-            final String text = model.getMemberName().toLowerCase();
+        final ArrayList<RoomMember> filteredModelList = new ArrayList<>();
+        for (RoomMember model : models) {
+            final String text = model.getName().toLowerCase();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }
@@ -154,37 +216,10 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     private void addMemberInfo() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View v = inflater.inflate(R.layout.add_member_item, null);
-        final EditText memberName = v.findViewById(R.id.memberName);
-        final EditText memberDesc = v.findViewById(R.id.memberEmail);
-        AlertDialog.Builder addDialog = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
-        addDialog.setView(v);
-        addDialog.setPositiveButton("Ok", (dialog, $noName_1) -> {
-            EditText editText = memberName;
-            String names = editText.getText().toString();
-            editText = memberDesc;
-            String emails = editText.getText().toString();
-            if(names.equals("") || emails.equals("")){
-                Toast.makeText(getContext(), "Enter valid data", Toast.LENGTH_SHORT).show();
-            }
-            else {
-
-                MembersFragment.access$getMemberList$p(MembersFragment.this).add(new Member(names,emails));
-                MembersFragment.access$getMemberAdapter$p(MembersFragment.this).notifyDataSetChanged();
-                Toast.makeText(getContext(), "Added Member Successfully", Toast.LENGTH_SHORT).show();
-            }
-            dialog.dismiss();
-        });
-        addDialog.setNegativeButton("Cancel", (dialog, $noName_1) -> {
-            dialog.dismiss();
-            Toast.makeText(getContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-        });
-        addDialog.create();
-        addDialog.show();
+        dialog.show();
     }
 
-    public static ArrayList<Member> access$getMemberList$p(MembersFragment $this) {
+    public static ArrayList<RoomMember> access$getMemberList$p(MembersFragment $this) {
         return $this.members;
     }
 

@@ -1,5 +1,8 @@
 package com.example.connect.AuthenticationActivities;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +25,12 @@ public class Helper<password> {
 
     public static long getUniqueLongID(){
         return UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+    }
+
+    public static int pxToDp(int px, Context c) {
+        DisplayMetrics displayMetrics = c.getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
     }
 
 }

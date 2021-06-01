@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/app_icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Connect">
-        <activity android:name=".MeetActivity"></activity>
+        <activity android:name=".MeetActivity" />
         <activity
             android:name=".RoomActivity"
             android:windowSoftInputMode="adjustPan" />
