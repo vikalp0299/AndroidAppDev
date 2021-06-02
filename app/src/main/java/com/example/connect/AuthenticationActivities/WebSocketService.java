@@ -56,7 +56,7 @@ public class WebSocketService extends Application {
     public static final String REMOVED_MEMBER = "remove_member";
 
 
-    private static final String hostUrl = "https://56b6b7c6deba.ngrok.io";
+    private static final String hostUrl = "https://963e0888cbf1.ngrok.io";
     private Socket socket;
     private static Activity currentActivity;
     private DaoSession daoSession;
