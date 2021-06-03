@@ -6,4 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".MeetActivity">
 
+    <ImageButton
+        android:id="@+id/EndCallButton"
+        android:layout_width="59dp"
+        android:layout_height="54dp"
+        android:background="@mipmap/endcall_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.945" />
+
+    <ToggleButton
+        android:id="@+id/MicToggleButton"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:background="@drawable/toggle_mic"
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/EndCallButton"
+        app:layout_constraintHorizontal_bias="0.768"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.936" />
+
+    <ToggleButton
+        android:id="@+id/VideoToggleButton"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:background="@drawable/toggle_video"
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.253"
+        app:layout_constraintStart_toEndOf="@+id/EndCallButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.936" />
+
+    <ImageButton
+        android:id="@+id/ExpandButton"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:background="@mipmap/expand_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/MicToggleButton"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.936" />
+
+    <ImageButton
+        android:id="@+id/SettingsButton"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:background="@mipmap/settings_round"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toEndOf="@+id/VideoToggleButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.936" />
 </androidx.constraintlayout.widget.ConstraintLayout>
