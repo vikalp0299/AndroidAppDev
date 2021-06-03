@@ -56,6 +56,7 @@ public class ProfileFragment extends Fragment {
                session.getRoomDao().deleteAll();
                session.getRoomMemberDao().deleteAll();
                session.getAuthUserDao().deleteAll();
+               session.getInvitationNotificationDao().deleteAll();
                Intent intent = new Intent(getContext(), GettingStartedActivity.class);
                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                getActivity().startActivity(intent);

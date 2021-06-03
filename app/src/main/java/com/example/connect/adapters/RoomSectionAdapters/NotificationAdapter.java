@@ -35,7 +35,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         InvitationNotification notification = notifications.get(position);
-        holder.userText.setText(notification.getSenderName() + "invited you to");
+        holder.userText.setText(notification.getSenderName() + " invited you to");
         holder.teamText.setText(notification.getRoomName());
         String url = "https://picsum.photos/200";
         Picasso.get().load(url).into(holder.getNotificationImageView());
@@ -61,7 +61,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 e.printStackTrace();
             }
         });
-        if (!notification.response.equals("none")){
+        if (!notification.response.equals("none") && !notification.response.equals("null")){
 
             int[][] states = new int[][] {
                     new int[] { android.R.attr.state_enabled}, // enabled

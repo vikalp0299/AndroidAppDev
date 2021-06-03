@@ -144,6 +144,7 @@ public class WSSEmitters {
                         user.setTimeStamp(jsonUser.getLong("joined"));
                         daoSession.getAuthUserDao().deleteAll();
                         daoSession.getAuthUserDao().insert(user);
+                        WebSocketService.getWebSocketService().clearAuthUser();
                         remoteLoadRooms();
                         break;
                     }
