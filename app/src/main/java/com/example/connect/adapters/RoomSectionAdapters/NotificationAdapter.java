@@ -1,5 +1,7 @@
 package com.example.connect.adapters.RoomSectionAdapters;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,41 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 e.printStackTrace();
             }
         });
+        if (!notification.response.equals("none")){
+
+            int[][] states = new int[][] {
+                    new int[] { android.R.attr.state_enabled}, // enabled
+                    new int[] {-android.R.attr.state_enabled}, // disabled
+                    new int[] {-android.R.attr.state_checked}, // unchecked
+                    new int[] { android.R.attr.state_pressed}  // pressed
+            };
+
+            int[] acceptColors = new int[] {
+                    Color.GREEN,
+                    Color.DKGRAY,
+                    Color.DKGRAY,
+                    Color.DKGRAY
+            };
+
+            int[] rejectColors = new int[] {
+                    Color.RED,
+                    Color.DKGRAY,
+                    Color.DKGRAY,
+                    Color.DKGRAY
+            };
+
+
+            holder.acceptButton.setVisibility(View.GONE);
+            holder.rejectButton.setVisibility(View.GONE);
+            holder.responseButton.setText(notification.response);
+            holder.responseButton.setClickable(false);
+            holder.responseButton.setVisibility(View.VISIBLE);
+            if (notification.response.equals("accepted")){
+                holder.responseButton.setBackgroundTintList(new ColorStateList(states, acceptColors));
+            }else{
+                holder.responseButton.setBackgroundTintList(new ColorStateList(states, rejectColors));
+            }
+        }
     }
 
     @Override

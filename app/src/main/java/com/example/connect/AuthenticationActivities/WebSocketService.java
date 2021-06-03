@@ -103,6 +103,7 @@ public class WebSocketService extends Application {
         Database db = dataBaseService.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
         webSocketService = this;
+        daoSession.getInvitationNotificationDao().deleteAll();
         try {
             IO.Options options = new IO.Options();
             options.query = "uid=" + ((hasAuthUser() && isAuthUserVerified()) ? getAuthUser().getUid() : "");

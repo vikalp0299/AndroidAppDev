@@ -357,12 +357,14 @@ public class WSSEmitters {
                 String senderName = json.getString("senderName");
                 String senderImage = json.getString("senderImage");
                 String senderId = json.getString("senderId");
+                String response = json.getString("response");
                 InvitationNotification notification = new InvitationNotification();
                 notification.setRid(rid);
                 notification.setSenderName(senderName);
                 notification.setRoomName(roomName);
                 notification.setPictureUrl(senderImage);
                 notification.setSenderId(senderId);
+                notification.setResponse(response);
                 daoSession.getInvitationNotificationDao().insertWithoutSettingPk(notification);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -387,12 +389,14 @@ public class WSSEmitters {
                         String senderName = notificationData.getString("senderName");
                         String senderImage = notificationData.getString("senderImage");
                         String senderId = notificationData.getString("senderId");
+                        String response = notificationData.getString("response");
                         InvitationNotification notification = new InvitationNotification();
                         notification.setRid(rid);
                         notification.setSenderName(senderName);
                         notification.setRoomName(roomName);
                         notification.setPictureUrl(senderImage);
                         notification.setSenderId(senderId);
+                        notification.setResponse(response);
                         daoSession.getInvitationNotificationDao().insertWithoutSettingPk(notification);
                     }
                     EventBus.getDefault().post(new GetNotificationEvent(true));
