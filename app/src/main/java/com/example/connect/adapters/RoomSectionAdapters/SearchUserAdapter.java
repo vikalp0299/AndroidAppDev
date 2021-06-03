@@ -1,5 +1,6 @@
 package com.example.connect.adapters.RoomSectionAdapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 
 public final class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.SearchUserHolder> {
@@ -50,12 +52,19 @@ public final class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdap
         if (this.parent.members.contains(user.getSid())){
             holder.getImageView().setVisibility(View.GONE);
             user.setIsAlreadyMember(true);
+            user.setInvited(false);
             return;
+        }
+        if (user.isInvited()){
+            holder.inviteButton.setImageResource(R.drawable.ic_person_invited);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.getInviteButton().setVisibility(View.VISIBLE);
         }
         holder.getInviteButton().setOnClickListener(v -> {
             JSONObject json = new JSONObject();
             try {
-                json.put("uid",user.getSid());
+                json.put("sid",user.getSid());
+                json.put("uid",wss.getAuthUser().getUid());
                 json.put("rid",wss.getRoom().getRid());
                 holder.getInviteButton().setVisibility(View.GONE);
                 holder.getProgressBar().setVisibility(View.VISIBLE);
@@ -78,22 +87,12 @@ public final class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdap
     }
 
     public void updateListItem(String sid){
-        if (this.searchUsers.contains(sid)){
-            int pos = searchUsers.indexOf(sid);
-            SearchUser user = searchUsers.get(pos);
-            user.setIsAlreadyMember(true);
-            notifyItemChanged(pos);
-            RoomMember member = new RoomMember();
-            member.setId(Helper.getUniqueLongID());
-            member.setMid(sid);
-            member.setEmail(user.getEmail());
-            member.setName(user.getName());
-            member.setPictureUrl(user.getPictureUrl());
-            member.setRid(this.wss.getRoom().getRid());
-            this.wss.getDaoSession().getRoomMemberDao().insert(member);
-            this.parent.adapter.getMemberList().add(member);
-            this.parent.adapter.notifyDataSetChanged();
-        }
+        IntStream.range(0,searchUsers.size()).forEach(index -> {
+            if (searchUsers.get(index).getSid().equals(sid)){
+                searchUsers.get(index).setInvited(true);
+                notifyItemChanged(index);
+            }
+        });
     }
 
     public final ArrayList<SearchUser> getSearchUsers() {

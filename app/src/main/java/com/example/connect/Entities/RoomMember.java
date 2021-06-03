@@ -58,10 +58,6 @@ public class RoomMember {
         return this.id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getMid() {
         return this.mid;
     }

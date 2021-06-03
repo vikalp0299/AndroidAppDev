@@ -1,13 +1,17 @@
 package com.example.connect;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.connect.fragments.BottomNavigationFragments.AssignmentFragment;
-import com.example.connect.fragments.BottomNavigationFragments.CalendarFragment;
+import com.example.connect.fragments.BottomNavigationFragments.ProfileFragment;
 import com.example.connect.fragments.BottomNavigationFragments.ChatFragment;
 import com.example.connect.fragments.BottomNavigationFragments.NotificationFragment;
 import com.example.connect.fragments.BottomNavigationFragments.RoomFragment;
@@ -21,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment fragment2 = new ChatFragment();
     final Fragment fragment3 = new RoomFragment();
     final Fragment fragment4 = new AssignmentFragment();
-    final Fragment fragment5 = new CalendarFragment();
+    final Fragment fragment5 = new ProfileFragment();
     final FragmentManager fm = getSupportFragmentManager();
 
     Fragment active = fragment3;
@@ -65,8 +69,11 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
         });
-
     }
+//
+//    public void changeColorToPurple(){
+//        getWindow().setStatusBarColor(this.getColor(R.color.purple_500));
+//    }
 }
 
 

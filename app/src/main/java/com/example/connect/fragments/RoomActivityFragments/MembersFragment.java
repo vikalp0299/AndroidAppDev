@@ -10,6 +10,7 @@ import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,11 +26,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.connect.AuthenticationActivities.Events.AddedMemberEvent;
-import com.example.connect.AuthenticationActivities.Events.OpenRoomEvent;
+import com.example.connect.AuthenticationActivities.Events.GotMembersEvent;
+import com.example.connect.AuthenticationActivities.Events.InvitedMemberEvent;
 import com.example.connect.AuthenticationActivities.Events.SearchUsersEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.RoomMember;
+import com.example.connect.Entities.RoomMemberDao;
 import com.example.connect.R;
 import com.example.connect.adapters.RoomSectionAdapters.MemberAdapter.MemberAdapter;
 
@@ -50,6 +52,7 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
     public ArrayList<RoomMember> members = new ArrayList<RoomMember>();
     public MemberAdapter adapter;
     private Dialog dialog;
+    private SwipeRefreshLayout memberRecyclerRefresher;
     WebSocketService wss = WebSocketService.getWebSocketService();
     RecyclerView searchRecyclerView;
     private SearchUserAdapter searchUserAdapter;
@@ -88,12 +91,26 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMemberAdded(AddedMemberEvent event){
+    public void onMemberAdded(InvitedMemberEvent event){
         if (event.status){
             searchUserAdapter.updateListItem(event.sid);
         }else {
             Toast.makeText(getContext(),"Failed to add member",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGotRemoteMembers(GotMembersEvent event){
+        if (event.status){
+            loadDataFromDao();
+            adapter.setMemberList(members);
+            memberRecyclerRefresher.setRefreshing(false);
+        }
+    }
+
+    public void loadDataFromDao(){
+        members.clear();
+        members.addAll(wss.getDaoSession().getRoomMemberDao().queryBuilder().where(RoomMemberDao.Properties.Rid.eq(wss.getRoom().getRid())).list());
     }
 
 
@@ -104,9 +121,24 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
         View view = inflater.inflate(R.layout.fragment_members, container, false);
         FloatingActionButton floatingActionButton = view.findViewById(R.id.memberAddingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.memberRecycler);
+        memberRecyclerRefresher = view.findViewById(R.id.member_fragment_refresher);
+        loadDataFromDao();
+        memberRecyclerRefresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("rid",wss.getRoom().getRid());
+                    wss.fireDataToServer(WebSocketService.GET_MEMBERS,jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         adapter = new MemberAdapter(getContext(), members);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        floatingActionButton.setVisibility(wss.getAuthUser().getUid().equals(wss.getRoom().getCreatedByUser()) ? View.VISIBLE : View.GONE);
         floatingActionButton.setOnClickListener(it -> MembersFragment.this.addMemberInfo());
 
         dialog = new Dialog(getContext());
@@ -148,6 +180,7 @@ public class MembersFragment extends Fragment implements SearchView.OnQueryTextL
                 JSONObject json = new JSONObject();
                 try {
                     json.put("searchText",s.toString());
+                    json.put("rid",wss.getRoom().getRid());
                     wss.fireDataToServer(WebSocketService.SEARCH_USERS,json);
                 } catch (JSONException e) {
                     e.printStackTrace();

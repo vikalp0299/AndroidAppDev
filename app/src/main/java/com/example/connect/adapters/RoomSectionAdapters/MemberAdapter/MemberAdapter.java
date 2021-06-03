@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.RoomMember;
 
 import com.example.connect.R;
@@ -44,6 +45,11 @@ public final class MemberAdapter extends Adapter {
         RoomMember member = this.memberList.get(position);
         holder.getName().setText(member.getName());
         holder.getEmail().setText(member.getEmail());
+        if (member.getMid().equals(WebSocketService.getWebSocketService().getAuthUser().getUid()) || !WebSocketService.getWebSocketService().getAuthUser().getUid().equals(WebSocketService.getWebSocketService().getRoom().getRid())){
+            holder.getmMenus().setVisibility(View.GONE);
+            return;
+        }
+        holder.getmMenus().setVisibility(View.VISIBLE);
     }
 
     public void onBindViewHolder(@NonNull ViewHolder vh, int i) {
@@ -70,11 +76,25 @@ public final class MemberAdapter extends Adapter {
         this.memberList = memList;
     }
 
+    public void setMemberList(ArrayList<RoomMember> memberList) {
+        this.memberList = memberList;
+        notifyDataSetChanged();
+    }
+
     public final class MemberViewHolder extends ViewHolder {
 
         private TextView name;
         private TextView email;
         private ImageView mMenus;
+
+        public ImageView getmMenus() {
+            return mMenus;
+        }
+
+        public void setmMenus(ImageView mMenus) {
+            this.mMenus = mMenus;
+        }
+
         //private LinearLayout memTile;
         private final View v;
 
@@ -87,7 +107,7 @@ public final class MemberAdapter extends Adapter {
 
         private void popupMenus(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             Object obj = MemberAdapter.this.getMemberList().get(this.getAdapterPosition());
-            final RoomMember position = (RoomMember) obj;
+            final RoomMember roomMember = (RoomMember) obj;
             PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
 
             popupMenus.inflate(R.menu.remove_member_menu);

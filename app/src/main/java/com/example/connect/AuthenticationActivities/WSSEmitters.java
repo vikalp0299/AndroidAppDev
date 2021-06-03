@@ -2,9 +2,13 @@ package com.example.connect.AuthenticationActivities;
 
 import android.util.Log;
 
-import com.example.connect.AuthenticationActivities.Events.AddedMemberEvent;
+import com.example.connect.AuthenticationActivities.Events.GetNotificationEvent;
+import com.example.connect.AuthenticationActivities.Events.GotMembersEvent;
+import com.example.connect.AuthenticationActivities.Events.InvitedMemberEvent;
+import com.example.connect.AuthenticationActivities.Events.GetRoomsEvent;
 import com.example.connect.AuthenticationActivities.Events.LoginEvent;
 import com.example.connect.AuthenticationActivities.Events.RegistrationEvent;
+import com.example.connect.AuthenticationActivities.Events.RespondToNotificationEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomCreationEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomDeletionEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomEditedEvent;
@@ -13,9 +17,13 @@ import com.example.connect.AuthenticationActivities.Events.UniqueEmailEvent;
 import com.example.connect.AuthenticationActivities.Events.VerificationEvent;
 import com.example.connect.Entities.AuthUser;
 import com.example.connect.Entities.DaoSession;
+import com.example.connect.Entities.InvitationNotification;
 import com.example.connect.Entities.Room;
 import com.example.connect.Entities.RoomDao;
+import com.example.connect.Entities.RoomMember;
+import com.example.connect.Entities.RoomMemberDao;
 import com.example.connect.model.SearchUser;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -27,7 +35,6 @@ import java.util.ArrayList;
 import io.socket.emitter.Emitter;
 
 public class WSSEmitters {
-
 
     DaoSession daoSession;
 
@@ -57,12 +64,13 @@ public class WSSEmitters {
                     user.setVerified(false);
                     user.setTimeStamp(Long.parseLong(joined));
                     daoSession.getAuthUserDao().deleteAll();
+                    daoSession.clear();
                     System.out.println("user created");
                     daoSession.getAuthUserDao().insert(user);
-                    EventBus.getDefault().post(new RegistrationEvent(status,user));
+                    EventBus.getDefault().post(new RegistrationEvent(true,user));
                     return;
                 }
-                EventBus.getDefault().post(new RegistrationEvent(status));
+                EventBus.getDefault().post(new RegistrationEvent(false));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -95,6 +103,7 @@ public class WSSEmitters {
                     user.setVerified(true);
                     user.setToken(token);
                     daoSession.getAuthUserDao().update(user);
+                    remoteLoadRooms();
                 }
                 EventBus.getDefault().post(new VerificationEvent(status));
                 return;
@@ -105,6 +114,16 @@ public class WSSEmitters {
         }
     };
 
+    public void remoteLoadRooms(){
+        JSONObject json = new JSONObject();
+        try {
+            WebSocketService wss = WebSocketService.getWebSocketService();
+            json.put("uid",wss.getAuthUser().getUid());
+            wss.fireDataToServer(WebSocketService.GET_ROOMS,json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public Emitter.Listener onLogin = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -125,6 +144,8 @@ public class WSSEmitters {
                         user.setTimeStamp(jsonUser.getLong("joined"));
                         daoSession.getAuthUserDao().deleteAll();
                         daoSession.getAuthUserDao().insert(user);
+                        WebSocketService.getWebSocketService().clearAuthUser();
+                        remoteLoadRooms();
                         break;
                     }
                     case 300: {
@@ -243,10 +264,14 @@ public class WSSEmitters {
                     for (int i = 0; i < result.length(); i++) {
                         JSONObject data = result.getJSONObject(i);
                         String uid = data.getString("uid");
+                        if (uid.equals(WebSocketService.getWebSocketService().getAuthUser().getUid())){
+                            continue;
+                        }
                         String email = data.getString("email");
                         String pictureUrl = data.getString("pictureUrl");
                         String name = data.getString("name");
-                        SearchUser user = new SearchUser(uid,name,email,pictureUrl);
+                        boolean isInvited = data.getBoolean("isInvited");
+                        SearchUser user = new SearchUser(uid,name,email,pictureUrl,isInvited);
                         searchUsers.add(user);
                     }
                     EventBus.getDefault().post(new SearchUsersEvent(true, searchUsers));
@@ -259,21 +284,229 @@ public class WSSEmitters {
         }
     };
 
-    public Emitter.Listener onAddedMember = new Emitter.Listener() {
+    public Emitter.Listener onInvitedMember = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             JSONObject json = (JSONObject) args[0];
             try {
                 boolean status = json.getBoolean("status");
                 if (status){
-                    String uid = json.getString("uid");
+                    String sid = json.getString("sid");
                     String rid = json.getString("rid");
-                    EventBus.getDefault().post(new AddedMemberEvent(true,rid,uid));
-                }                return;
+                    EventBus.getDefault().post(new InvitedMemberEvent(true,rid,sid));
+                }
+                return;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            EventBus.getDefault().post(new AddedMemberEvent(false));
+            EventBus.getDefault().post(new InvitedMemberEvent(false));
+        }
+    };
+
+    public Emitter.Listener onJoinedRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //TODO : load conversations
+        }
+    };
+
+    public Emitter.Listener onTakeRooms = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            boolean status = false;
+            try {
+                status = json.getBoolean("status");
+                if (status){
+                    JSONArray results = json.getJSONArray("result");
+                    ArrayList<Room> rooms = new ArrayList<>();
+                    for (int i = 0;i<results.length();i++){
+                        JSONObject data = results.getJSONObject(i);
+                        String rid = data.getString("rid");
+                        String name = data.getString("name");
+                        String description = data.getString("description");
+                        String createdBy = data.getString("createdBy");
+
+                        Room room = new Room();
+                        room.setName(name);
+                        room.setCreatedByUser(createdBy);
+                        room.setRid(rid);
+                        room.setDescription(description);
+                        rooms.add(room);
+                    }
+                    daoSession.getRoomDao().deleteAll();
+                    rooms.forEach(room -> {
+                        daoSession.getRoomDao().insertWithoutSettingPk(room);
+                    });
+                    EventBus.getDefault().post(new GetRoomsEvent(true));
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new GetRoomsEvent(false));
+        }
+    };
+
+    public Emitter.Listener onRoomInvited = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                String rid = json.getString("rid");
+                String roomName = json.getString("roomName");
+                String senderName = json.getString("senderName");
+                String senderImage = json.getString("senderImage");
+                String senderId = json.getString("senderId");
+                String response = json.getString("response");
+                InvitationNotification notification = new InvitationNotification();
+                notification.setRid(rid);
+                notification.setSenderName(senderName);
+                notification.setRoomName(roomName);
+                notification.setPictureUrl(senderImage);
+                notification.setSenderId(senderId);
+                notification.setResponse(response);
+                daoSession.getInvitationNotificationDao().insertWithoutSettingPk(notification);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    public Emitter.Listener onGotNotifications = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                boolean status = json.getBoolean("status");
+                if (status){
+                    daoSession.getInvitationNotificationDao().deleteAll();
+                    daoSession.clear();
+                    JSONArray result = json.getJSONArray("result");
+                    for (int i = 0; i< result.length();i++){
+                        JSONObject notificationData = result.getJSONObject(i);
+                        String rid = notificationData.getString("rid");
+                        String roomName = notificationData.getString("roomName");
+                        String senderName = notificationData.getString("senderName");
+                        String senderImage = notificationData.getString("senderImage");
+                        String senderId = notificationData.getString("senderId");
+                        String response = notificationData.getString("response");
+                        InvitationNotification notification = new InvitationNotification();
+                        notification.setRid(rid);
+                        notification.setSenderName(senderName);
+                        notification.setRoomName(roomName);
+                        notification.setPictureUrl(senderImage);
+                        notification.setSenderId(senderId);
+                        notification.setResponse(response);
+                        daoSession.getInvitationNotificationDao().insertWithoutSettingPk(notification);
+                    }
+                    EventBus.getDefault().post(new GetNotificationEvent(true));
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new GetNotificationEvent(false));
+        }
+    };
+
+    public Emitter.Listener onAddedMember = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                String mid = json.getString("mid");
+                String email = json.getString("email");
+                String name = json.getString("name");
+                String rid = json.getString("rid");
+                String pictureUrl = json.getString("pictureUrl");
+                RoomMember member = new RoomMember();
+                member.setRid(rid);
+                member.setPictureUrl(pictureUrl);
+                member.setName(name);
+                member.setEmail(email);
+                member.setMid(mid);
+                daoSession.getRoomMemberDao().insertWithoutSettingPk(member);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    public Emitter.Listener onAcceptedInvitation = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject)args[0];
+            try {
+                boolean status = json.getBoolean("status");
+                if (status){
+                    String rid = json.getString("rid");
+                    String name = json.getString("name");
+                    String description = json.getString("description");
+                    String createdBy = json.getString("createdBy");
+                    Room room = new Room();
+                    room.setName(name);
+                    room.setCreatedByUser(createdBy);
+                    room.setRid(rid);
+                    room.setDescription(description);
+                    daoSession.getRoomDao().insertWithoutSettingPk(room);
+                    EventBus.getDefault().post(new RespondToNotificationEvent(true));
+                }
+                EventBus.getDefault().post(new RespondToNotificationEvent(false));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    public Emitter.Listener onRejectedInvitation = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject)args[0];
+            try {
+                boolean status = json.getBoolean("status");
+                EventBus.getDefault().post(new RespondToNotificationEvent(status));
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new RespondToNotificationEvent(false));
+        }
+    };
+
+    public Emitter.Listener onGotMembers = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject) args[0];
+            try {
+                String rid = json.getString("rid");
+                if (json.getBoolean("status")){
+                    JSONArray results = json.getJSONArray("result");
+                    ArrayList<RoomMember> members = new ArrayList<>();
+                    for(int i=0;i<results.length();i++){
+                        JSONObject jsonMember = results.getJSONObject(i);
+                        String mid = jsonMember.getString("mid");
+                        String name = jsonMember.getString("name");
+                        String email = jsonMember.getString("email");
+                        String pictureUrl = jsonMember.getString("pictureUrl");
+                        RoomMember member = new RoomMember();
+                        member.setMid(mid);
+                        member.setEmail(email);
+                        member.setName(name);
+                        member.setRid(rid);
+                        member.setPictureUrl(pictureUrl);
+                        members.add(member);
+                    }
+                    daoSession.getRoomMemberDao().queryBuilder().where(RoomMemberDao.Properties.Rid.eq(rid)).buildDelete().executeDeleteWithoutDetachingEntities();
+                    members.forEach(member->{
+                        daoSession.getRoomMemberDao().insertWithoutSettingPk(member);
+                    });
+                    EventBus.getDefault().post(new GotMembersEvent(true));
+                    return;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new GotMembersEvent(false));
         }
     };
 }
