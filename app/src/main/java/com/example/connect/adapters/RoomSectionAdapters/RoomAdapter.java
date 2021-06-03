@@ -58,6 +58,13 @@ public final class RoomAdapter extends Adapter {
             @Override
             public void onClick(View v) {
                 final Intent intent;
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("rid",room.getRid());
+                    wss.fireDataToServer("",json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 intent =  new Intent(holder.getV().getContext(), RoomActivity.class);
                 holder.getV().getContext().startActivity(intent);
                 EventBus.getDefault().post(new OpenRoomEvent(room));

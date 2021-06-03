@@ -1,13 +1,13 @@
 package com.example.connect.AuthenticationActivities.Events;
 
-public class AddedMemberEvent {
+public class InvitedMemberEvent {
     public boolean status;
     public String rid,sid;
-    public AddedMemberEvent(boolean status){
+    public InvitedMemberEvent(boolean status){
         this.status = status;
     }
 
-    public AddedMemberEvent(boolean status, String rid, String sid) {
+    public InvitedMemberEvent(boolean status, String rid, String sid) {
         this.status = status;
         this.rid = rid;
         this.sid = sid;

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
 
+import com.example.connect.AuthenticationActivities.Events.GetRoomsEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomCreationEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomDeletionEvent;
 import com.example.connect.AuthenticationActivities.Events.RoomEditedEvent;
@@ -25,6 +26,7 @@ import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.example.connect.adapters.RoomSectionAdapters.RoomAdapter;
@@ -40,62 +42,39 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RoomFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class RoomFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private ArrayList<com.example.connect.Entities.Room> rooms = new ArrayList<>();
     private RoomAdapter adapter;
     WebSocketService webSocketService;
+    SwipeRefreshLayout refreshLayout;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    
     public RoomFragment() {
         // Required empty public constructor
     }
 
-
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RoomFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RoomFragment newInstance(String param1, String param2) {
-        RoomFragment fragment = new RoomFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_room, container, false);
         webSocketService = (WebSocketService)getActivity().getApplication();
         loadDaoData();
         FloatingActionButton floatingActionButton = view.findViewById(R.id.addingBtn);
         RecyclerView recyclerView = view.findViewById(R.id.mRecycler);
+        refreshLayout = view.findViewById(R.id.room_fragment_swipe_refresher);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("uid",webSocketService.getAuthUser().getUid());
+                    webSocketService.fireDataToServer(WebSocketService.GET_ROOMS,json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         this.adapter = new RoomAdapter(getContext(), rooms);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -116,7 +95,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         inflater.inflate(R.menu.search_menu, menu);
 
         final MenuItem item = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        final SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(this);
 
 
@@ -193,6 +172,14 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGotRoomsComplete(GetRoomsEvent event){
+        if (event.status){
+            loadDaoData();
+            this.adapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
+        }
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEditComplete(RoomEditedEvent event){

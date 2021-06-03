@@ -3,48 +3,40 @@ package com.example.connect.fragments.BottomNavigationFragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.connect.AuthenticationActivities.Events.GetNotificationEvent;
+import com.example.connect.AuthenticationActivities.WebSocketService;
+import com.example.connect.Entities.InvitationNotification;
 import com.example.connect.R;
+import com.example.connect.adapters.RoomSectionAdapters.NotificationAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NotificationFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 public class NotificationFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    RecyclerView recyclerView;
+    NotificationAdapter adapter;
+    SwipeRefreshLayout swipeRefreshLayout;
+    ArrayList<InvitationNotification> notifications = new ArrayList<>();
+    WebSocketService webSocketService = WebSocketService.getWebSocketService();
     public NotificationFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NotificationFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static NotificationFragment newInstance(String param1, String param2) {
         NotificationFragment fragment = new NotificationFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -52,15 +44,70 @@ public class NotificationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetNotifications(GetNotificationEvent event){
+        if (event.status){
+            loadFromDao();
+            adapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseToNotification(GetNotificationEvent event){
+        if (event.status){
+            loadRemoteNotifications();
+        }
+    }
+
+
+    public void loadFromDao(){
+        notifications.clear();
+        notifications.addAll(webSocketService.getDaoSession().getInvitationNotificationDao().loadAll());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        loadFromDao();
+        View v = inflater.inflate(R.layout.fragment_notification, container, false);
+        swipeRefreshLayout = v.findViewById(R.id.notification_swipe_refresh);
+        recyclerView = v.findViewById(R.id.notification_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new NotificationAdapter(notifications);
+        recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadRemoteNotifications();
+            }
+        });
+        return v;
+    }
+
+    public void loadRemoteNotifications(){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("uid",webSocketService.getAuthUser().getUid());
+            webSocketService.fireDataToServer(WebSocketService.GET_NOTIFICATIONS,json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,6 +8,23 @@ public class SearchUser {
     String email;
     String pictureUrl;
     boolean isAlreadyMember;
+    boolean isInvited;
+
+    public SearchUser(String sid, String name, String email, String pictureUrl, boolean isInvited) {
+        this.sid = sid;
+        this.name = name;
+        this.email = email;
+        this.pictureUrl = pictureUrl;
+        this.isInvited = isInvited;
+    }
+
+    public void setInvited(boolean invited) {
+        isInvited = invited;
+    }
+
+    public boolean isInvited() {
+        return isInvited;
+    }
 
     public SearchUser(String sid, String name, String email, String pictureUrl) {
         this.sid = sid;
