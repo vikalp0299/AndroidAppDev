@@ -162,7 +162,7 @@ public class RoomFragment extends Fragment implements SearchView.OnQueryTextList
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDelete(RoomDeletionEvent event){
         if (event.status){
-            Toast.makeText(getContext(), "Deleted ,"+this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Deleted", Toast.LENGTH_SHORT).show();
             if (this.adapter.deletedRoomsHashMap.containsKey(event.room.getRid())){
                 int position = this.adapter.deletedRoomsHashMap.get(event.room.getRid());
                 RoomFragment.access$getRoomAdapter$p(RoomFragment.this).removeItemFromList(position);
