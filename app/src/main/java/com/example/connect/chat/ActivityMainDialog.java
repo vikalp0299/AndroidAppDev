@@ -1,21 +1,16 @@
-package com.example.connect.fragments.BottomNavigationFragments;
+package com.example.connect.chat;
 
 import android.os.Bundle;
-
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
+
 import com.example.connect.R;
-import com.example.connect.chat.ModelOFDialog;
 import com.example.connect.chat.commons.ImageLoader;
 import com.example.connect.chat.dialogs.DialogsList;
 import com.example.connect.chat.dialogs.DialogsListAdapter;
@@ -23,9 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-
-public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialogClickListener<ModelOFDialog>, SearchView.OnQueryTextListener {
-
+public class ActivityMainDialog extends AppCompatActivity implements DialogsListAdapter.OnDialogClickListener<ModelOFDialog>, SearchView.OnQueryTextListener {
 
     ArrayList<ModelOFDialog> dialogsList = com.example.connect.chat.FixtureOFDialogs.getDialogs();
     DialogsList dialogsListview;
@@ -34,27 +27,17 @@ public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialo
     ImageView imageView;
     String url;
 
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View chatView = inflater.inflate(R.layout.fragment_chat, container, false);
-        dialogsListview = chatView.findViewById(R.id.dialogsList);
-        imageView = chatView.findViewById(R.id.dialogAvatar);
+        setContentView(R.layout.activity_dialog_main_gg);
+        dialogsListview = findViewById(R.id.dialogsList);
+        imageView = findViewById(R.id.dialogAvatar);
         url = "https://picsum.photos/200/300";
         imageLoadergg = ((imageView, url, payload) -> Picasso.get().load(url).into(imageView));
         adapterActivate();
-
-        return chatView;
     }
+
     private void adapterActivate() {
         dialogsListAdapter = new DialogsListAdapter<>(
                 R.layout.item_view_dialog_gg,
@@ -64,13 +47,18 @@ public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialo
 
         dialogsListAdapter.setOnDialogClickListener(this);
         dialogsListAdapter.setItems(dialogsList);
-        Log.d("Msg",dialogsListview.toString());
         dialogsListview.setAdapter(dialogsListAdapter);
+    }
 
+
+    @Override
+    public void onDialogClick(ModelOFDialog dialog) {
+        com.example.connect.chat.ActivityMainMessage.start(this);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
 
         final MenuItem item = menu.findItem(R.id.action_search);
@@ -92,6 +80,7 @@ public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialo
                 return true; // Return true to expand action view
             }
         });
+        return true;
     }
 
     @Override
@@ -118,8 +107,5 @@ public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialo
         }
         return filteredModelList;
     }
-    @Override
-    public void onDialogClick(ModelOFDialog dialog) {
-        com.example.connect.chat.ActivityMainMessage.start(getContext());
-    }
 }
+
