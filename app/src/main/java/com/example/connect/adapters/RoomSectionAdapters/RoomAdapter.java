@@ -249,12 +249,13 @@ public final class RoomAdapter extends Adapter {
             this.mMenus.setOnClickListener(it -> {
                 RoomViewHolder viewHolder = RoomViewHolder.this;
                 try {
-//                    if(WebSocketService.getWebSocketService().getAuthUser().getUid().equals(WebSocketService.getWebSocketService().getRoom().getCreatedByUser())){
-//                    viewHolder.popupMenusLeave(it);
-//                    }
-//                    else{
-                        viewHolder.popupMenus(it);
-//                    }
+                    Room obj = RoomAdapter.this.getRoomList().get(this.getAdapterPosition());
+                    if(WebSocketService.getWebSocketService().getAuthUser().getUid().equals(obj.getCreatedByUser())){
+                    viewHolder.popupMenus(it);
+                    }
+                    else{
+                        viewHolder.popupMenusLeave(it);
+                    }
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
