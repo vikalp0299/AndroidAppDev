@@ -71,7 +71,7 @@ public class DialogsListAdapter<DIALOG extends IDialog>
      * @param imageLoader image loading method
      */
     public DialogsListAdapter(ImageLoader imageLoader) {
-        this(R.layout.item_dialog, DialogViewHolder.class, imageLoader);
+        this(R.layout.item_view_dialog_gg, DialogViewHolder.class, imageLoader);
     }
 
     /**
