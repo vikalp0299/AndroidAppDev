@@ -22,7 +22,7 @@
         />
     <item
         android:id="@+id/Calender"
-        android:title="@string/calendar"
-        android:icon="@drawable/ic_calender"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_profile"
         />
 </menu>

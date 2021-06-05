@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.connect.AuthenticationActivities.Events.GetNotificationEvent;
+import com.example.connect.AuthenticationActivities.Events.RespondToNotificationEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.InvitationNotification;
 import com.example.connect.R;
@@ -72,6 +73,14 @@ public class NotificationFragment extends Fragment {
     public void onResponseToNotification(GetNotificationEvent event){
         if (event.status){
             loadRemoteNotifications();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseToAccept(RespondToNotificationEvent event){
+        if (event.status){
+            loadFromDao();
+            adapter.notifyDataSetChanged();
         }
     }
 

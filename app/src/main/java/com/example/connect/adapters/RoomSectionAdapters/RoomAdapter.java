@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.example.connect.AuthenticationActivities.Events.OpenRoomEvent;
 import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.Entities.Room;
+import com.example.connect.Entities.RoomMember;
 import com.example.connect.RoomActivity;
 import com.example.connect.R;
 
@@ -195,6 +196,38 @@ public final class RoomAdapter extends Adapter {
             menu.getClass().getDeclaredMethod("setForceShowIcon", Boolean.TYPE).invoke(menu, true);
         }
 
+        private void popupMenusLeave(View v) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+            Object obj = RoomAdapter.this.getRoomList().get(this.getAdapterPosition());
+            final Room selectedRoom = (Room)obj;
+            PopupMenu popupMenus = new PopupMenu(getV().getContext(), v);
+
+            popupMenus.inflate(R.menu.leave_room_menu);
+            popupMenus.setOnMenuItemClickListener(it -> {
+                        (new Builder(getV().getContext())).setTitle("Leave").setIcon(R.drawable.ic_warning).setMessage("Are you sure to leave this Room").setPositiveButton("Yes", (dialog, $noName_1) -> {
+//                            deletedRoomsHashMap.put(selectedRoom.getRid(),this.getAdapterPosition());
+//                            JSONObject json = new JSONObject();
+//                            try {
+//                                json.put("id",""+selectedRoom.getId());
+//                                json.put("rid",selectedRoom.getRid());
+//                                json.put("name",selectedRoom.getName());
+//                                json.put("description", selectedRoom.getDescription());
+//                                wss.fireDataToServer(WebSocketService.DELETE_ROOM,json);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+                            dialog.dismiss();
+                        }).setNegativeButton("No", null).create().show();
+                return true;
+            });
+            popupMenus.show();
+            Field popup = PopupMenu.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+            Object menu = popup.get(popupMenus);
+            assert menu != null;
+            menu.getClass().getDeclaredMethod("setForceShowIcon", Boolean.TYPE).invoke(menu, true);
+        }
+
+
 
         public final View getV() {
             return this.v;
@@ -216,7 +249,13 @@ public final class RoomAdapter extends Adapter {
             this.mMenus.setOnClickListener(it -> {
                 RoomViewHolder viewHolder = RoomViewHolder.this;
                 try {
+                    Room obj = RoomAdapter.this.getRoomList().get(this.getAdapterPosition());
+                    if(WebSocketService.getWebSocketService().getAuthUser().getUid().equals(obj.getCreatedByUser())){
                     viewHolder.popupMenus(it);
+                    }
+                    else{
+                        viewHolder.popupMenusLeave(it);
+                    }
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {

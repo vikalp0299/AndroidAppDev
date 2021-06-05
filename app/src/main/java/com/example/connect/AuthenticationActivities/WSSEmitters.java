@@ -2,6 +2,7 @@ package com.example.connect.AuthenticationActivities;
 
 import android.util.Log;
 
+import com.example.connect.AuthenticationActivities.Events.GetDialogsEvent;
 import com.example.connect.AuthenticationActivities.Events.GetNotificationEvent;
 import com.example.connect.AuthenticationActivities.Events.GotMembersEvent;
 import com.example.connect.AuthenticationActivities.Events.InvitedMemberEvent;
@@ -22,6 +23,8 @@ import com.example.connect.Entities.Room;
 import com.example.connect.Entities.RoomDao;
 import com.example.connect.Entities.RoomMember;
 import com.example.connect.Entities.RoomMemberDao;
+import com.example.connect.chat.ModelOFDialog;
+import com.example.connect.chat.ModelOFUser;
 import com.example.connect.model.SearchUser;
 import com.google.gson.JsonObject;
 
@@ -507,6 +510,38 @@ public class WSSEmitters {
                 e.printStackTrace();
             }
             EventBus.getDefault().post(new GotMembersEvent(false));
+        }
+    };
+
+    public Emitter.Listener onGotConversations = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject json = (JSONObject)args[0];
+            try{
+                boolean status = json.getBoolean("status");
+                if (status){
+                    JSONArray results = json.getJSONArray("results");
+                    ArrayList<ModelOFDialog> dialogs = new ArrayList<>();
+                    for(int i = 0;i<results.length();i++){
+                        JSONObject data = results.getJSONObject(i);
+                        String uid = data.getString("uid");
+                        String cid = data.getString("cid");
+                        String name = data.getString("name");
+                        String picture = data.getString("image");
+                        ModelOFUser user = new ModelOFUser(uid,name,picture,false);
+                        ArrayList<ModelOFUser> users = new ArrayList<>();
+                        users.add(user);
+                        ModelOFDialog dialog = new ModelOFDialog(cid,name,picture,users,null,0);
+                        dialogs.add(dialog);
+                    }
+                    Log.d("getting messages ","dgsdgdfgsdfgsdf");
+                    EventBus.getDefault().post(new GetDialogsEvent(true,dialogs));
+                    return;
+                }
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+            EventBus.getDefault().post(new GetDialogsEvent(false));
         }
     };
 }

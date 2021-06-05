@@ -18,6 +18,10 @@ import com.example.connect.Entities.InvitationNotification;
 import com.example.connect.Entities.InvitationNotificationDao;
 import com.example.connect.Entities.Room;
 import com.example.connect.MainActivity;
+import com.example.connect.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -67,6 +71,8 @@ public class WebSocketService extends Application {
     public static final String LEFT_ROOM = "left_room";
     public static final String GET_ROOMS = "get_rooms";
     public static final String TAKE_ROOMS = "take_rooms";
+    public static final String GET_CONVERSATIONS = "get_conversations";
+    public static final String GOT_CONVERSATIONs = "got_conversations";
 
 
     private static final String hostUrl = "https://963e0888cbf1.ngrok.io";
@@ -98,6 +104,7 @@ public class WebSocketService extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        getNotificationsToken();
         EventBus.getDefault().register(this);
         DataBaseService dataBaseService = new DataBaseService(this,"mad_app");
         Database db = dataBaseService.getWritableDb();
@@ -125,6 +132,7 @@ public class WebSocketService extends Application {
             socket.on(ACCEPTED_INVITATION,emitters.onAcceptedInvitation);
             socket.on(REJECTED_INVITATION,emitters.onRejectedInvitation);
             socket.on(GOT_MEMBERS,emitters.onGotMembers);
+            socket.on(GOT_CONVERSATIONs,emitters.onGotConversations);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -244,6 +252,27 @@ public class WebSocketService extends Application {
 
     public Room getRoom(){
         return this.room;
+    }
+
+    public void getNotificationsToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("token", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Log.d("token",token);
+                        // Log and toast
+//                        String msg = getString(R.string.msg_token_fmt, token);
+//                        Log.d(TAG, msg);
+//                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
 
