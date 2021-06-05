@@ -29,7 +29,7 @@ public class FixtureOFDialogs extends FixtureDatas {
                 users.size() > 1 ? groupChatTitles.get(users.size() - 2) : users.get(0).getName(),
                 users.size() > 1 ? groupChatImages.get(users.size() - 2) : getRandomAvatar(),
                 users,
-                getMessage(lastMessageCreatedAt),
+                null,
                 i < 3 ? 3 - i : 0);
     }
 

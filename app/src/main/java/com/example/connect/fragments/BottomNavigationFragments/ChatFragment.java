@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
+import android.util.EventLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.connect.AuthenticationActivities.Events.GetDialogsEvent;
+import com.example.connect.AuthenticationActivities.WebSocketService;
 import com.example.connect.R;
 import com.example.connect.chat.ModelOFDialog;
 import com.example.connect.chat.commons.ImageLoader;
@@ -21,26 +24,49 @@ import com.example.connect.chat.dialogs.DialogsList;
 import com.example.connect.chat.dialogs.DialogsListAdapter;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
 public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialogClickListener<ModelOFDialog>, SearchView.OnQueryTextListener {
 
 
-    ArrayList<ModelOFDialog> dialogsList = com.example.connect.chat.FixtureOFDialogs.getDialogs();
+    ArrayList<ModelOFDialog> dialogsList = new ArrayList<>();
     DialogsList dialogsListview;
     DialogsListAdapter dialogsListAdapter;
     ImageLoader imageLoadergg;
     ImageView imageView;
     String url;
+    WebSocketService service = WebSocketService.getWebSocketService();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGotConversations(GetDialogsEvent e){
+        if (e.status) dialogsListAdapter.setItems(e.dialogs);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +77,13 @@ public class ChatFragment extends Fragment implements DialogsListAdapter.OnDialo
         imageView = chatView.findViewById(R.id.dialogAvatar);
         url = "https://picsum.photos/200/300";
         imageLoadergg = ((imageView, url, payload) -> Picasso.get().load(url).into(imageView));
+        JSONObject json = new JSONObject();
+        try {
+            json.put("uid",service.getAuthUser().getUid());
+            service.fireDataToServer(WebSocketService.GET_CONVERSATIONS,json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         adapterActivate();
 
         return chatView;
