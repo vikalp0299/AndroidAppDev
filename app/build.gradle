@@ -53,4 +53,10 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    implementation "com.squareup.picasso:picasso:2.71828"
+    implementation "de.hdodenhof:circleimageview:2.2.0"
+    implementation "com.github.siyamed:android-shape-imageview:0.9.3"
+    implementation "me.relex:circleindicator:1.2.2@aar"
+    implementation 'com.github.stfalcon-studio:Chatkit:v0.4.1'
 }

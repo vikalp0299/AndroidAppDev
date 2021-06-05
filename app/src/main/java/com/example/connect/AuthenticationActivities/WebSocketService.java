@@ -71,6 +71,8 @@ public class WebSocketService extends Application {
     public static final String LEFT_ROOM = "left_room";
     public static final String GET_ROOMS = "get_rooms";
     public static final String TAKE_ROOMS = "take_rooms";
+    public static final String GET_CONVERSATIONS = "get_conversations";
+    public static final String GOT_CONVERSATIONs = "got_conversations";
 
 
     private static final String hostUrl = "https://963e0888cbf1.ngrok.io";
@@ -130,6 +132,7 @@ public class WebSocketService extends Application {
             socket.on(ACCEPTED_INVITATION,emitters.onAcceptedInvitation);
             socket.on(REJECTED_INVITATION,emitters.onRejectedInvitation);
             socket.on(GOT_MEMBERS,emitters.onGotMembers);
+            socket.on(GOT_CONVERSATIONs,emitters.onGotConversations);
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
